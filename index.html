@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookU — Tu espacio a un click</title>
+</head>
+<body>
+
+  <header id="inicio">
+    <a href="#inicio">BookU</a>
+    <nav>
+      <ul>
+        <li><a href="#problema">El problema</a></li>
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#para-quien">Para quién</a></li>
+        <li><a href="#proyecto">El proyecto</a></li>
+        <li><a href="#reservar">Reservar</a></li>
+        <li><a href="#video">Vídeo</a></li>
+        <li><a href="#equipo">El equipo</a></li>
+      </ul>
+    </nav>
+    <a href="#reservar">Probar BookU</a>
+  </header>
+
+  <main>
+
+    <section id="portada">
+      <p>TU ESPACIO A UN CLICK</p>
+      <h1>BookU, tu espacio a un click</h1>
+      <p>Consulta aulas, salas de estudio y material universitario desde un mismo lugar. Encuentra lo que necesitas y planifica tu próxima sesión con BookU.</p>
+      <a href="#reservar">Probar una reserva</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <p>Proyecto académico · Equipo 8 · Proyectos 3</p>
+    </section>
+
+    <section id="problema">
+      <p>EL PROBLEMA</p>
+      <h2>Tu tiempo debería estar en el trabajo, no en buscar dónde hacerlo.</h2>
+      <ol>
+        <li>
+          <h3>01 · Necesitas un espacio.</h3>
+          <p>Un trabajo en grupo, una sesión de estudio o una clase que preparar.</p>
+        </li>
+        <li>
+          <h3>02 · Buscas sin información suficiente.</h3>
+          <p>Qué espacio encaja, cuándo está disponible y cómo organizarte.</p>
+        </li>
+        <li>
+          <h3>03 · El tiempo se va en encontrarlo.</h3>
+          <p>Consultas y desplazamientos que interrumpen lo que venías a hacer.</p>
+        </li>
+      </ol>
+      <p>La propuesta de BookU busca hacer más cómoda la consulta de espacios y recursos. No sustituye ni describe los procedimientos actuales del centro.</p>
+    </section>
+
+    <section id="como-funciona">
+      <p>LA SOLUCIÓN</p>
+      <h2>Menos vueltas. Tres pasos.</h2>
+      <p>De tener un plan a tener un espacio. BookU propone reunir la información que necesitas para organizarte.</p>
+      <ol>
+        <li>
+          <h3>01 · Encuentra</h3>
+          <p>Consulta opciones y características para elegir el recurso que encaja con tu actividad.</p>
+        </li>
+        <li>
+          <h3>02 · Reserva</h3>
+          <p>Elige una fecha y un horario disponibles para tu próxima sesión.</p>
+        </li>
+        <li>
+          <h3>03 · Organízate</h3>
+          <p>Consulta tu reserva o cancélala si tus planes cambian.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="para-quien">
+      <p>PARA QUIÉN</p>
+      <h2>Distintos planes. Un mismo punto de encuentro.</h2>
+      <article>
+        <h3>Estudiantes</h3>
+        <p>Organizar sesiones de estudio y trabajos en grupo.</p>
+        <small>Uso previsto en la propuesta</small>
+      </article>
+      <article>
+        <h3>Docentes</h3>
+        <p>Encontrar aulas adecuadas para su actividad.</p>
+        <small>Uso previsto en la propuesta</small>
+      </article>
+      <article>
+        <h3>Personal universitario</h3>
+        <p>Facilitar la coordinación de recursos, reservas e incidencias.</p>
+        <small>Uso previsto en la propuesta</small>
+      </article>
+      <p>En esta demostración puedes reservar y cancelar aulas, salas, boxes y material con un nombre de prueba. La gestión administrativa y de incidencias es una función prevista, no implementada.</p>
+    </section>
+
+    <section id="proyecto">
+      <p>EL PROYECTO</p>
+      <h2>Conoce la propuesta completa.</h2>
+      <iframe
+        src="https://www.canva.com/design/DAHZ3jZeDM8/TxSw0OSo3mjvUCpQslyRgA/view?embed"
+        title="Presentación del proyecto BookU"
+        loading="lazy"
+        allowfullscreen>
+      </iframe>
+    </section>
+
+    <!-- Sección de la demo -->
+    <section id="reservar">
+      <p>PRUÉBALO TÚ</p>
+      <h2>Tu próxima sesión empieza aquí.</h2>
+      <p>Elige un espacio o material y consulta su disponibilidad.</p>
+      <p><strong>Demostración con datos ficticios.</strong> Las reservas se guardan solo en este navegador y no se comparten entre usuarios. No es un servicio oficial de U-tad.</p>
+
+      <form>
+        <label for="categoria">Categoría de reserva</label>
+        <select id="categoria" name="categoria">
+          <option value="aulas">Aulas (08:00–20:00)</option>
+          <option value="salas">Salas de estudio</option>
+          <option value="boxes">Boxes</option>
+          <option value="material">Material universitario</option>
+        </select>
+
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha" name="fecha">
+
+        <label for="hora">Franja horaria</label>
+        <select id="hora" name="hora">
+          <option value="08:00">08:00 - 10:00</option>
+          <option value="10:00">10:00 - 12:00</option>
+          <option value="12:00">12:00 - 14:00</option>
+          <option value="16:00">16:00 - 18:00</option>
+          <option value="18:00">18:00 - 20:00</option>
+        </select>
+
+        <label for="nombre">Nombre de prueba</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej. Ana">
+
+        <button type="submit">Reservar espacio</button>
+      </form>
+
+      <div class="mis-reservas">
+        <h3>Mis reservas de prueba (0)</h3>
+        <p>Introduce tu nombre de prueba para consultar tus reservas.</p>
+      </div>
+    </section>
+
+    <section id="video">
+      <p>VÍDEO CONCEPTUAL</p>
+      <h2>De buscar un aula a empezar a trabajar.</h2>
+      <p>Una mirada de un minuto a la idea de BookU y a cómo podría acompañar tu día.</p>
+      <iframe
+        src="https://drive.google.com/file/d/1NU-RZybs3qcvc-Q8RjQRe-MCF0EyFv-t/preview"
+        title="Vídeo conceptual de BookU"
+        loading="lazy"
+        allow="autoplay; fullscreen"
+        allowfullscreen>
+      </iframe>
+    </section>
+
+    <section id="equipo">
+      <p>EQUIPO 8 · PROYECTOS 3</p>
+      <h2>El equipo</h2>
+      <img src="./img/equipo.jpeg" alt="Integrantes del Equipo 8 presentando BookU en el aula">[cite: 1]
+      <ul>
+        <li><strong>Daniel Peralta Llamas</strong> — Full Stack · Product Owner</li>
+        <li><strong>Harsukhman Preet Singh Kaur</strong> — Frontend y Portavoz · Scrum Master</li>
+        <li><strong>Jesús León Romero Atienza</strong> — Diseño Digital</li>
+        <li><strong>Pablo Martín Martín</strong> — Full Stack</li>
+        <li><strong>Sergio Mendo Expósito</strong> — Full Stack</li>
+        <li><strong>Sergio Ponce Plaza</strong> — Full Stack</li>
+        <li><strong>Rafael Ceres Martínez</strong> — Frontend</li>
+      </ul>
+    </section>
+
+    <section id="faq">
+      <p>NUESTRA REVISIÓN</p>
+      <h2>Preguntas frecuentes</h2>
+
+      <details>
+        <summary>¿Qué es BookU?</summary>
+        <p>Es una propuesta académica diseñada para centralizar la consulta y reserva de aulas, salas de estudio y material universitario.</p>
+      </details>
+
+      <details>
+        <summary>¿Es un servicio oficial de U-tad?</summary>
+        <p>No. Es un prototipo desarrollado por el Equipo 8 para la asignatura Proyectos 3 con datos ficticios.</p>
+      </details>
+
+      <details>
+        <summary>¿Necesito iniciar sesión para probarlo?</summary>
+        <p>No, en esta demostración basta con escribir un nombre de prueba para simular una reserva.</p>
+      </details>
+
+      <details>
+        <summary>¿Dónde se guardan las reservas que hago en la demo?</summary>
+        <p>Se almacenan únicamente de forma local en tu navegador y no se comparten con otros usuarios.</p>
+      </details>
+
+      <details>
+        <summary>¿Qué funciones están previstas para el futuro?</summary>
+        <p>La autenticación institucional, la sincronización en tiempo real y la gestión administrativa de incidencias.</p>
+      </details>
+    </section>
+
+  </main>
+
+  <footer>
+    <a href="#inicio">BookU</a>
+    <p>BookU · Equipo 8 · Proyectos 3</p>
+    <p>Proyecto académico. Demostración con datos ficticios.</p>
+  </footer>
+
+</body>
+</html>
