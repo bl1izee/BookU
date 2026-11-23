@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BookU — Tu espacio a un click</title>
+  <script src="js/datos.js" defer></script>
+  <script src="js/reservas.js" defer></script>
 </head>
 <body>
 
@@ -113,37 +115,24 @@
       <p>Elige un espacio o material y consulta su disponibilidad.</p>
       <p><strong>Demostración con datos ficticios.</strong> Las reservas se guardan solo en este navegador y no se comparten entre usuarios. No es un servicio oficial de U-tad.</p>
 
-      <form>
-        <label for="categoria">Categoría de reserva</label>
-        <select id="categoria" name="categoria">
-          <option value="aulas">Aulas (08:00–20:00)</option>
-          <option value="salas">Salas de estudio</option>
-          <option value="boxes">Boxes</option>
-          <option value="material">Material universitario</option>
-        </select>
+      <label for="nombre">Nombre de prueba</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Ej. Ana" autocomplete="off">
 
-        <label for="fecha">Fecha</label>
-        <input type="date" id="fecha" name="fecha">
+      <div id="tabs-categorias" role="group" aria-label="Categoría de reserva"></div>
+      <div id="dias" role="group" aria-label="Día"></div>
+      <div id="filtros"></div>
 
-        <label for="hora">Franja horaria</label>
-        <select id="hora" name="hora">
-          <option value="08:00">08:00 - 10:00</option>
-          <option value="10:00">10:00 - 12:00</option>
-          <option value="12:00">12:00 - 14:00</option>
-          <option value="16:00">16:00 - 18:00</option>
-          <option value="18:00">18:00 - 20:00</option>
-        </select>
+      <p id="mensaje" class="mensaje" role="status" aria-live="polite"></p>
 
-        <label for="nombre">Nombre de prueba</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Ej. Ana">
-
-        <button type="submit">Reservar espacio</button>
-      </form>
-
-      <div class="mis-reservas">
-        <h3>Mis reservas de prueba (0)</h3>
-        <p>Introduce tu nombre de prueba para consultar tus reservas.</p>
+      <div class="reserva-panel">
+        <div id="lista-recursos"></div>
+        <div>
+          <div id="detalle-recurso"></div>
+          <div id="franjas"></div>
+        </div>
       </div>
+
+      <div id="mis-reservas" class="mis-reservas"></div>
     </section>
 
     <section id="video">
@@ -162,7 +151,7 @@
     <section id="equipo">
       <p>EQUIPO 8 · PROYECTOS 3</p>
       <h2>El equipo</h2>
-      <img src="./img/equipo.jpeg" alt="Integrantes del Equipo 8 presentando BookU en el aula">[cite: 1]
+      <img src="./img/equipo.jpeg" alt="Integrantes del Equipo 8 presentando BookU en el aula">
       <ul>
         <li><strong>Daniel Peralta Llamas</strong> — Full Stack · Product Owner</li>
         <li><strong>Harsukhman Preet Singh Kaur</strong> — Frontend y Portavoz · Scrum Master</li>
