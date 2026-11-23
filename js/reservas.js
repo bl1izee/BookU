@@ -506,65 +506,6 @@ function cancelar(clave) {
     render();
 }
 
-// Estilos temporales para que comprobar si se marcan bien las cosas sea fácil (puedes cambiarlo todo jesus)
-
-const ESTILOS = `
-    #reservar button { cursor: pointer; font: inherit; }
-    #reservar button:disabled { cursor: not-allowed; }
-
-    #tabs-categorias, #dias, #filtros, #franjas {
-        display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;
-    }
-
-    #tabs-categorias button, .dia, .recurso, .franja {
-        border: 1px solid #ccc; border-radius: 8px; background: #fff; padding: 8px 12px;
-    }
-    #tabs-categorias button.activo, .dia.activo, .recurso.activo {
-        border-color: #222; background: #222; color: #fff;
-    }
-
-    .dia { display: flex; flex-direction: column; align-items: center; min-width: 64px; text-transform: capitalize; }
-    .dia strong { font-size: 1.5em; }
-
-    #filtros label { display: flex; flex-direction: column; font-size: .85em; }
-
-    .reserva-panel { display: grid; grid-template-columns: minmax(220px, 1fr) 2fr; gap: 24px; }
-    @media (max-width: 700px) { .reserva-panel { grid-template-columns: 1fr; } }
-
-    #lista-recursos ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
-    .recurso { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 2px; }
-
-    #detalle-recurso dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
-    #detalle-recurso dt { font-weight: bold; }
-    #detalle-recurso dd { margin: 0; }
-
-    #franjas { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-    .franja { display: flex; flex-direction: column; }
-    .franja.libre { border-color: #2e7d32; }
-    .franja.libre:hover { background: #e8f5e9; }
-    .franja.ocupada { background: #fdecea; color: #b71c1c; }
-    .franja.pasada { background: #f2f2f2; color: #999; }
-    .franja.mia { background: #2e7d32; color: #fff; }
-
-    small.libre { color: #2e7d32; }
-    small.ocupado { color: #b71c1c; }
-    .recurso.activo small { color: inherit; }
-
-    .mensaje:empty { display: none; }
-    .mensaje { padding: 8px 12px; border-radius: 8px; }
-    .mensaje.ok { background: #e8f5e9; }
-    .mensaje.error { background: #fdecea; }
-
-    #mis-reservas ul { list-style: none; padding: 0; display: grid; gap: 6px; }
-    #mis-reservas li { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-`;
-
-function meterEstilos() {
-    const etiqueta = document.createElement("style");
-    etiqueta.textContent = ESTILOS;
-    document.head.appendChild(etiqueta);
-}
-
 function alPulsarCategoria(evento) {
     const boton = evento.target.closest("[data-categoria]");
     if (!boton) return;
@@ -636,7 +577,6 @@ function alCambiarOtraPestana(evento) {
 }
 
 function iniciar() {
-    meterEstilos();
     $("nombre").value = estado.nombre;
 
     $("tabs-categorias").addEventListener("click", alPulsarCategoria);
