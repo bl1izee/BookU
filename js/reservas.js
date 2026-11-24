@@ -443,14 +443,39 @@ function mostrarMensaje(texto, tipo = "ok") {
 
 //Pop-up cuando se pulsa una franja que es de otra persona
 function avisarOcupada(recurso, hora, quien) {
-    const mensaje =
+    return abrirPopup(
+        "Franja ocupada",
         `${recurso.nombre} ya está reservada por ${quien}\n` +
         `${fechaLarga(estado.fecha)}, ${hora} – ${horaFin(hora)}.\n\n` +
-        "Elige otra franja u otro espacio.";
-    alert(mensaje);
+        "Elige otra franja u otro espacio.",
+        "Entendido",
+        false
+    );
 }
 
-function reservar(hora) {
+//Abre el pop-up y devuelve una promesa: true si pulsa Aceptar, false si cancela
+//(botón Cancelar, tecla Escape). Con conCancelar = false solo sale el botón Aceptar.
+function abrirPopup(titulo, texto, textoAceptar = "Aceptar", conCancelar = true) {
+    const popup = $("popup");
+    $("popup-titulo").textContent = titulo;
+    $("popup-texto").textContent = texto;
+    $("popup-aceptar").textContent = textoAceptar;
+    $("popup-cancelar").hidden = !conCancelar;
+
+    return new Promise(resolver => {
+        function alCerrar() {
+            popup.removeEventListener("close", alCerrar);
+            resolver(popup.returnValue === "aceptar");
+        }
+
+        popup.returnValue = "";
+        popup.addEventListener("close", alCerrar);
+        popup.showModal();
+        $("popup-aceptar").focus();
+    });
+}
+
+async function reservar(hora) {
     const recurso = recursoSeleccionado();
     const nombre = nombreActual();
 
@@ -475,9 +500,28 @@ function reservar(hora) {
         return;
     }
 
+    //Guardamos la fecha por si cambia de día mientras el pop-up está abierto
+    const fecha = estado.fecha;
+    const franja = `${fechaLarga(fecha)}, ${hora} – ${horaFin(hora)}`;
+
+    //Pop-up 1: confirmar la reserva
+    const confirmado = await abrirPopup(
+        "¿Quieres hacer la reserva?",
+        `${recurso.nombre}\n${franja}\nA nombre de: ${nombre}`,
+        "Reservar"
+    );
+    if (!confirmado) return;
+
+    //Puede haber pasado la hora mientras el pop-up estaba abierto
+    if (yaHaPasado(fecha, hora)) {
+        mostrarMensaje("Esta franja ya ha pasado. Elige otro horario.", "error");
+        render();
+        return;
+    }
+
     //Por si alguien mas lo ha reservado
     estado.reservas = leerReservas();
-    const clave = claveReserva(estado.fecha, recurso.id, hora);
+    const clave = claveReserva(fecha, recurso.id, hora);
     if (estado.reservas[clave]) {
         avisarOcupada(recurso, hora, estado.reservas[clave]);
         render();
@@ -486,8 +530,16 @@ function reservar(hora) {
 
     estado.reservas[clave] = nombre;
     guardarReservas(estado.reservas);
-    mostrarMensaje(`Reservado: ${recurso.nombre}, ${fechaLarga(estado.fecha)}, ${hora} – ${horaFin(hora)}.`);
+    mostrarMensaje(`Reservado: ${recurso.nombre}, ${franja}.`);
     render();
+
+    //Pop-up 2: reserva hecha
+    await abrirPopup(
+        "¡Reserva hecha!",
+        `Has reservado ${recurso.nombre}\n${franja}.`,
+        "Entendido",
+        false
+    );
 }
 
 function cancelar(clave) {
@@ -587,6 +639,9 @@ function iniciar() {
     $("mis-reservas").addEventListener("click", alPulsarCancelar);
     $("nombre").addEventListener("input", alEscribirNombre);
     window.addEventListener("storage", alCambiarOtraPestana);
+
+    $("popup-aceptar").addEventListener("click", () => $("popup").close("aceptar"));
+    $("popup-cancelar").addEventListener("click", () => $("popup").close("cancelar"));
 
     setInterval(render, 60 * 1000);
 

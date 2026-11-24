@@ -315,6 +315,16 @@
       </div>
 
       <div id="mis-reservas" class="mis-reservas"></div>
+
+      <!-- Pop-up de confirmación y de reserva hecha (lo rellena reservas.js) -->
+      <dialog id="popup" class="popup" aria-labelledby="popup-titulo">
+        <h3 id="popup-titulo"></h3>
+        <p id="popup-texto"></p>
+        <div class="popup-botones">
+          <button type="button" id="popup-cancelar" class="popup-boton popup-boton--secundario">Cancelar</button>
+          <button type="button" id="popup-aceptar" class="popup-boton popup-boton--primario">Aceptar</button>
+        </div>
+      </dialog>
     </section>
 
     <section id="video">
