@@ -31,13 +31,32 @@
   font-display: swap;
 }
 
+/* Space Mono no tiene versión variable: un archivo por grosor. Se usa
+   en números y etiquetas pequeñas para dar un toque técnico. */
+@font-face {
+  font-family: "Space Mono";
+  src: url("../fonts/SpaceMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Mono";
+  src: url("../fonts/SpaceMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Variables compartidas por toda la página. Los valores salen de la
    versión de Lovable, convertidos a hexadecimal. */
 :root {
   --fuente-texto: "DM Sans", system-ui, sans-serif;
   --fuente-titulos: "Bricolage Grotesque", "DM Sans", system-ui, sans-serif;
+  --fuente-mono: "Space Mono", ui-monospace, monospace;
 
-  --color-marino: #040924; /* Cabecera, portada y pie. */
+  --color-marino: #040924; /* Tono de la cabecera (allí, semitransparente). */
   --color-marino-borde: #2c3850;
   --color-primario: #155dfc; /* Botones y elementos activos. */
   --color-primario-hover: #0049e8;
@@ -47,7 +66,8 @@
   --color-texto-secundario: #58616f;
   --color-texto-claro: #a6aec0; /* Texto secundario sobre fondo marino. */
   --color-fondo: #ffffff;
-  --color-fondo-suave: #f8fafc; /* Secciones alternas. */
+  --color-fondo-azul: #e9f0ff; /* Secciones alternas, unidas con degradados. */
+  --color-obsidiana: #03050c; /* Fondo de la portada y del pie. */
   --color-fondo-gris: #eff2f6;
   --color-borde: #d9dfe6;
   --color-libre: #e5f7eb;
@@ -55,6 +75,10 @@
   --color-ocupada: #f8ebe9;
   --color-ocupada-texto: #804036;
   --color-error: #d73431;
+
+  --color-brillo: rgba(21, 93, 252, 0.45); /* Resplandor azul de botones y puntos. */
+  --sombra-tarjeta: 0 12px 28px -12px rgba(21, 29, 45, 0.25);
+  --altura-cabecera: 72px;
 
   --radio: 6px;
   --ancho-contenido: 1120px;
@@ -69,6 +93,19 @@
 
 html {
   scroll-behavior: smooth; /* Los enlaces del menú se desplazan suavemente. */
+}
+
+/* Si el sistema pide reducir el movimiento, el salto es directo. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Como la cabecera es fija, cada sección deja ese hueco arriba al
+   llegar desde un enlace del menú. */
+main > section {
+  scroll-margin-top: var(--altura-cabecera);
 }
 
 body {
@@ -114,14 +151,52 @@ main > section {
   padding: 88px var(--margen-lateral); /* 88px arriba y abajo; lateral calculado. */
 }
 
-/* Texto pequeño en mayúsculas que aparece encima de cada título. */
+/* Secciones azules alternas. Empiezan y terminan en blanco, así el
+   paso desde la sección anterior y hacia la siguiente es un degradado
+   suave y no un corte. */
+#como-funciona,
+#proyecto,
+#reservar,
+#faq {
+  background-image: linear-gradient(
+    var(--color-fondo) 0,
+    var(--color-fondo-azul) 140px,
+    var(--color-fondo-azul) calc(100% - 140px),
+    var(--color-fondo) 100%
+  );
+}
+
+/* Nombre de la sección (EL PROBLEMA, LA SOLUCIÓN...) encima de cada
+   título, con su número y una línea azul: «01 —— EL PROBLEMA».
+   El número lo pone un contador de CSS, así que no está en el HTML
+   y se recalcula solo si se añade o se quita una sección. */
+main {
+  counter-reset: seccion;
+}
+
 .etiqueta {
-  margin: 0 0 16px;
-  color: var(--color-primario);
-  font-size: 0.7rem;
+  width: fit-content; /* Dentro de una rejilla tampoco se estira. */
+  margin: 0 0 20px;
+  display: inline-flex; /* Ocupa solo su texto; se centra si el padre centra. */
+  align-items: center;
+  color: var(--color-texto);
+  font-family: var(--fuente-mono);
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  counter-increment: seccion; /* Suma 1 en cada etiqueta: 01, 02, 03... */
+}
+
+/* Número en azul seguido de la línea. La línea es un fondo de 36×2px
+   colocado a la derecha del número, dentro de su relleno. */
+.etiqueta::before {
+  content: counter(seccion, decimal-leading-zero);
+  margin-right: 12px;
+  padding-right: 48px; /* 36px de línea + 12px de separación con el texto. */
+  color: var(--color-primario);
+  background: linear-gradient(var(--color-primario), var(--color-primario))
+    right center / 36px 2px no-repeat;
 }
 
 main h2 {
@@ -129,6 +204,46 @@ main h2 {
   font-family: var(--fuente-titulos);
   font-size: 2.25rem;
   font-weight: 700;
+}
+
+/* El sprite con los símbolos está al principio del <body>: no debe
+   ocupar espacio ni verse, solo guardar los iconos. */
+.sprite-iconos {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Iconos del sprite dentro de un cuadrado azul claro, como en la
+   versión de Lovable. El trazo toma el color de "color". */
+.icono {
+  width: 44px;
+  aspect-ratio: 1;
+  margin-bottom: 16px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(21, 93, 252, 0.18);
+  border-radius: 10px;
+  color: var(--color-primario);
+  background-color: var(--color-primario-suave);
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.icono svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Sobre las secciones azules el cuadrado va en blanco para destacar. */
+#como-funciona .icono {
+  background-color: var(--color-fondo);
+}
+
+/* En las tarjetas, el icono se rellena de azul al pasar el ratón. */
+#para-quien article:hover .icono {
+  color: #ffffff;
+  background-color: var(--color-primario);
 }
 
 /* Párrafo que acompaña al título de una sección. */
@@ -147,62 +262,106 @@ main h2 {
   font-size: 0.85rem;
 }
 
+/* Botones en forma de píldora con una flecha que se mueve al pasar
+   el ratón. La flecha se añade con ::after, sin tocar el HTML. */
 .boton {
   min-height: 44px;
-  padding: 0 32px;
+  padding: 0 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   border: 1px solid transparent;
-  border-radius: var(--radio);
+  border-radius: 999px; /* Un radio muy grande redondea los extremos. */
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition: background-color 150ms ease, border-color 150ms ease,
+    box-shadow 200ms ease, transform 200ms ease;
+}
+
+.boton::after {
+  content: "→";
+  transition: transform 200ms ease;
+}
+
+.boton:hover {
+  transform: translateY(-1px); /* Se eleva un píxel. */
+}
+
+.boton:hover::after {
+  transform: translateX(4px);
 }
 
 .boton--primario {
   color: #ffffff;
   background-color: var(--color-primario);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px -6px var(--color-brillo);
 }
 
 .boton--primario:hover {
   background-color: var(--color-primario-hover);
+  box-shadow: 0 10px 28px -6px var(--color-brillo); /* El brillo crece. */
 }
 
 .boton--secundario {
   color: #ffffff;
   border-color: var(--color-marino-borde);
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .boton--secundario:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+  border-color: var(--color-texto-claro);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* El secundario lleva a una sección inferior: flecha hacia abajo. */
+.boton--secundario::after {
+  content: "↓";
+}
+
+.boton--secundario:hover::after {
+  transform: translateY(3px);
 }
 
 /* ==================================================
    3. CABECERA Y MENÚ
    ================================================== */
 
+/* Cabecera fija arriba al desplazarse. El fondo es semitransparente
+   y desenfoca lo que pasa por debajo. */
 .cabecera {
-  min-height: 72px;
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Por encima del contenido de la página. */
+  min-height: var(--altura-cabecera);
   padding: 0 var(--margen-lateral);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
   border-bottom: 1px solid var(--color-marino-borde);
-  background-color: var(--color-marino);
+  background-color: rgba(4, 9, 36, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Safari necesita el prefijo. */
 }
 
-/* El logo se usa en la cabecera y en el pie. */
+/* Los márgenes automáticos centran el menú entre el logo y los botones. */
+.menu {
+  margin-inline: auto;
+}
+
+/* El logo (img/logo-booku.png, con fondo transparente) se usa en la
+   cabecera, la portada y el pie. Se fija la altura y el ancho sale
+   solo gracias a los atributos width y height del HTML. */
 .logo {
-  color: #ffffff;
-  font-family: var(--fuente-titulos);
-  font-size: 1.6rem;
-  font-weight: 800;
-  text-decoration: none;
+  flex-shrink: 0; /* No se encoge aunque falte espacio en la cabecera. */
+  display: block;
+}
+
+.logo img {
+  height: 34px;
+  width: auto;
+  display: block;
 }
 
 .menu ul {
@@ -235,48 +394,100 @@ main h2 {
    ================================================== */
 
 /* Más específico que "main > section" para sustituir su relleno. */
+/* Fondo de obsidiana, inspirado en la sección «Sobre mí» de chiissuu.com
+   con las vetas en azul. Capas del fondo, de arriba abajo:
+   resplandor azul, reflejo diagonal de piedra pulida, líneas finas
+   horizontales y degradado casi negro azulado. */
 main > #portada {
+  position: relative; /* Referencia para las capas ::before y ::after. */
+  isolation: isolate; /* Las capas con z-index negativo no salen de la sección. */
+  overflow: hidden;
   padding-top: 96px;
   padding-bottom: 112px;
   color: #ffffff;
-  background-color: var(--color-marino);
+  background-color: var(--color-obsidiana);
+  background-image:
+    radial-gradient(70% 40% at 50% 0%, rgba(21, 93, 252, 0.22), transparent 70%),
+    linear-gradient(115deg, transparent 34%, rgba(255, 255, 255, 0.03) 43%,
+      rgba(255, 255, 255, 0.005) 50%, transparent 57%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 4px),
+    linear-gradient(var(--color-obsidiana), #070b1a 40%, #050814);
   text-align: center;
 }
 
-/* En la portada la etiqueta usa el azul claro y lleva un punto delante. */
-#portada .etiqueta {
-  color: var(--color-acento);
-}
-
-#portada .etiqueta::before {
+/* Vetas: la imagen original es dorada. hue-rotate(180deg) gira el
+   tono del dorado al azul, saturate lo intensifica y drop-shadow le
+   da un brillo azul. La máscara funde las vetas arriba y abajo. */
+main > #portada::before {
   content: "";
-  width: 6px;
-  aspect-ratio: 1;
-  margin-right: 10px;
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: 50%;
-  background-color: currentColor; /* Usa el mismo color que el texto. */
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url("../img/vetas.webp") 50% 0 / 100% auto repeat-y;
+  filter: hue-rotate(180deg) saturate(1.8) brightness(1.1)
+    drop-shadow(0 0 3px rgba(0, 166, 244, 0.55));
+  -webkit-mask-image: linear-gradient(transparent, #000 120px, #000 calc(100% - 160px), transparent);
+  mask-image: linear-gradient(transparent, #000 120px, #000 calc(100% - 160px), transparent);
+  opacity: 0.7;
+  animation: vetas-latido 6s ease-in-out infinite alternate;
 }
 
+/* Las vetas se iluminan y apagan muy despacio. */
+@keyframes vetas-latido {
+  from {
+    opacity: 0.6;
+  }
+
+  to {
+    opacity: 0.8;
+  }
+}
+
+/* Oscurece la zona del texto para que se lea bien sobre las vetas. */
+main > #portada::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none; /* No bloquea los clics. */
+  background: radial-gradient(48% 34% at 50% 30%, rgba(3, 5, 12, 0.85),
+    rgba(3, 5, 12, 0.35) 70%, transparent 100%);
+}
+
+/* La marca es la protagonista: el logo muy grande y el eslogan debajo. */
 #portada h1 {
-  max-width: 780px;
-  margin: 0 auto;
+  margin: 0;
   font-family: var(--fuente-titulos);
-  font-size: 3.6rem;
-  font-weight: 700;
-  line-height: 1.1;
+  line-height: 1;
 }
 
-.resaltado {
+/* clamp(mínimo, ideal, máximo) ajusta el ancho del logo a la pantalla.
+   El resplandor azul hace que el birrete destaque sobre la obsidiana. */
+.portada-logo {
+  width: clamp(260px, 42vw, 520px);
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 0 40px rgba(21, 93, 252, 0.35));
+}
+
+/* El eslogan va dentro del h1 pero en su propia línea y más pequeño. */
+.eslogan {
+  margin-top: 14px;
+  display: block;
   color: var(--color-acento);
+  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
+/* La descripción resume el proyecto, así que va en blanco y no en gris. */
 .portada-texto {
-  max-width: 620px;
+  max-width: 640px;
   margin: 28px auto 36px; /* 28px arriba, centrado, 36px abajo. */
-  color: var(--color-texto-claro);
-  font-size: 1rem;
+  color: #ffffff;
+  font-size: 1.1rem;
   line-height: 1.7;
 }
 
@@ -286,23 +497,28 @@ main > #portada {
   margin: 0 6px 12px;
 }
 
-.portada-nota {
-  margin: 20px 0 0;
-  color: var(--color-texto-claro);
-  font-size: 0.75rem;
+/* Captura del calendario de ejemplo, presentada como una tarjeta que
+   flota sobre la portada con un brillo azul alrededor. */
+.portada-maqueta {
+  width: 100%;
+  max-width: 1000px;
+  height: auto; /* Respeta la proporción de los atributos width y height. */
+  margin: 56px auto 0;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  box-shadow:
+    0 30px 80px -20px rgba(0, 0, 0, 0.6),
+    0 0 60px -10px var(--color-brillo);
 }
 
 /* ==================================================
    5. EL PROBLEMA Y CÓMO FUNCIONA
    ================================================== */
 
-#como-funciona {
-  background-color: var(--color-fondo-suave);
-}
-
 /* Las dos secciones usan la misma lista de tres pasos. */
-#problema ol,
-#como-funciona ol {
+#problema > ol,
+#como-funciona > ol {
   margin: 48px 0 0;
   padding: 0;
   display: grid;
@@ -311,23 +527,346 @@ main > #portada {
   list-style: none;
 }
 
-#problema li,
-#como-funciona li {
+#problema > ol > li,
+#como-funciona > ol > li {
   padding-top: 24px;
   border-top: 1px solid var(--color-borde);
 }
 
-#problema h3,
-#como-funciona h3 {
+#problema > ol h3,
+#como-funciona > ol h3 {
   font-size: 1.05rem;
 }
 
-#problema li p,
-#como-funciona li p {
+#problema > ol > li p,
+#como-funciona > ol > li p {
   margin: 8px 0 0;
   color: var(--color-texto-secundario);
   font-size: 0.875rem;
   line-height: 1.7;
+}
+
+/* «Cómo funciona» como un recorrido: una línea que une los tres pasos
+   y un punto brillante encima de cada uno. */
+#como-funciona > ol {
+  position: relative; /* Referencia para colocar la línea. */
+}
+
+#como-funciona > ol::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 6px;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primario), var(--color-acento) 60%, transparent);
+}
+
+#como-funciona > ol > li {
+  position: relative;
+  padding-top: 32px;
+  border-top: 0; /* La línea común sustituye al borde de cada paso. */
+}
+
+#como-funciona > ol > li::before {
+  content: "";
+  position: absolute;
+  top: -6px; /* Centra el punto de 14px sobre la línea de 2px. */
+  left: 0;
+  width: 14px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--color-primario);
+  box-shadow:
+    0 0 0 5px rgba(21, 93, 252, 0.15),
+    0 0 18px var(--color-brillo);
+}
+
+/* --- Usuario real: Art --- */
+
+/* Tarjeta con la foto a la izquierda y la historia a la derecha. */
+.persona {
+  margin-top: 40px;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  border: 1px solid var(--color-borde);
+  border-radius: 14px;
+  background-color: var(--color-fondo);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+/* Hueco de la foto. Mientras no llega, muestra las iniciales. */
+.persona-foto {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--color-primario);
+  background-color: var(--color-primario-suave);
+  font-family: var(--fuente-titulos);
+  font-size: 2.5rem;
+  font-weight: 800;
+  object-fit: cover; /* Para cuando sea un <img>. */
+}
+
+.persona-texto > p {
+  margin: 0 0 12px;
+  color: var(--color-texto-secundario);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.persona-nombre strong {
+  color: var(--color-texto);
+  font-family: var(--fuente-titulos);
+  font-size: 1.25rem;
+}
+
+/* Cita literal de Art, con comillas dibujadas en azul. */
+.persona-cita {
+  margin: 20px 0;
+  padding: 16px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  border-left: 3px solid var(--color-primario);
+  border-radius: 0 10px 10px 0;
+  background-color: var(--color-primario-suave);
+}
+
+.persona-cita svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--color-primario);
+}
+
+.persona-cita p {
+  margin: 0;
+  color: var(--color-texto);
+  font-family: var(--fuente-titulos);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Recorrido en tres pasos unidos por flechas. */
+.persona-recorrido {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  counter-reset: paso;
+}
+
+.persona-recorrido li {
+  padding: 6px 12px;
+  border: 1px solid var(--color-borde);
+  border-radius: 999px;
+  background-color: var(--color-fondo);
+  font-size: 0.8rem;
+  counter-increment: paso;
+}
+
+.persona-recorrido li::before {
+  content: counter(paso) ". ";
+  color: var(--color-primario);
+  font-family: var(--fuente-mono);
+  font-weight: 700;
+}
+
+/* Flecha entre pasos: va detrás de todos menos del último. */
+.persona-recorrido li:not(:last-child)::after {
+  content: "→";
+  margin-left: 14px;
+  color: var(--color-texto-secundario);
+}
+
+/* El último paso es el momento de frustración: en rojo suave. */
+.persona-recorrido li:last-child {
+  color: var(--color-ocupada-texto);
+  border-color: #f0d3ce;
+  background-color: var(--color-ocupada);
+}
+
+/* --- Cifras y objetivos --- */
+
+/* Franja de cifras grandes: dos columnas y la fuente debajo. */
+.cifras {
+  margin-top: 48px;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  border-radius: 14px;
+  background-color: var(--color-fondo-azul);
+}
+
+/* Título y fuente ocupan toda la fila. */
+.cifras-titulo,
+.cifras-fuente {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.cifras-titulo {
+  font-family: var(--fuente-titulos);
+  font-size: 1.3rem;
+}
+
+.cifra {
+  padding: 20px;
+  border: 1px solid rgba(21, 93, 252, 0.15);
+  border-radius: 10px;
+  background-color: var(--color-fondo);
+}
+
+.cifra p {
+  margin: 0;
+}
+
+.cifra-numero {
+  color: var(--color-primario);
+  font-family: var(--fuente-titulos);
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.cifra-texto {
+  margin-top: 6px;
+  color: var(--color-texto-secundario);
+  font-size: 0.9rem;
+}
+
+/* Marca «Objetivo» para que nadie lo confunda con un resultado. */
+.cifra-etiqueta {
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #8a5a00;
+  background-color: #fff4d6;
+  font-family: var(--fuente-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cifras-fuente {
+  color: var(--color-texto-secundario);
+  font-size: 0.78rem;
+}
+
+.cifras-fuente a {
+  color: var(--color-primario);
+}
+
+/* En la sección azul, la franja va en blanco para distinguirse. */
+.cifras--objetivos {
+  border: 1px solid var(--color-borde);
+  background-color: var(--color-fondo);
+}
+
+.cifras--objetivos .cifra {
+  background-color: var(--color-fondo-azul);
+}
+
+/* --- Comparativa con la competencia --- */
+
+.competencia {
+  margin-top: 48px;
+}
+
+.competencia .cifras-titulo {
+  margin-bottom: 20px;
+}
+
+/* En móvil la tabla se desplaza en horizontal en vez de apretarse. */
+.tabla-contenedor {
+  position: relative; /* Retiene los textos .solo-lectores dentro del desplazamiento. */
+  overflow-x: auto;
+  border: 1px solid var(--color-borde);
+  border-radius: 14px;
+  background-color: var(--color-fondo);
+}
+
+.competencia table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.competencia th,
+.competencia td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-borde);
+  text-align: center;
+}
+
+.competencia tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+/* La primera columna lleva el nombre de cada característica. */
+.competencia th[scope="row"],
+.competencia thead th:first-child {
+  text-align: left;
+}
+
+.competencia thead th {
+  color: var(--color-texto-secundario);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.competencia th[scope="row"] {
+  font-weight: 500;
+}
+
+.competencia .si {
+  color: #16a34a; /* Verde: lo cumple. */
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.competencia .no {
+  color: var(--color-error); /* Rojo: no lo cumple. */
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* La columna de BookU se resalta con fondo azul y el nombre en azul. */
+.competencia .columna-booku {
+  background-color: var(--color-primario-suave);
+}
+
+.competencia thead .columna-booku {
+  color: var(--color-primario);
+  font-family: var(--fuente-titulos);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+/* Texto solo para lectores de pantalla: no se ve pero se lee. */
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* ==================================================
@@ -350,7 +889,16 @@ main > #portada {
   margin-top: 48px;
   padding: 27px;
   border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
+  border-radius: 10px;
+  background-color: var(--color-fondo);
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+/* Las tarjetas se elevan al pasar el ratón. */
+#para-quien article:hover {
+  transform: translateY(-4px);
+  border-color: #b8c4d6;
+  box-shadow: var(--sombra-tarjeta);
 }
 
 #para-quien h3 {
@@ -372,10 +920,6 @@ main > #portada {
    7. PROYECTO Y VÍDEO (CONTENIDO INSERTADO)
    ================================================== */
 
-#proyecto {
-  background-color: var(--color-fondo-suave);
-}
-
 /* La presentación y el vídeo mantienen la proporción 16:9. */
 #proyecto iframe,
 #video iframe {
@@ -391,10 +935,6 @@ main > #portada {
 /* ==================================================
    8. DEMO DE RESERVAS: CONTROLES SUPERIORES
    ================================================== */
-
-#reservar {
-  background-color: #f4f6f9;
-}
 
 /* Todos los botones de la demo los genera reservas.js. */
 #reservar button {
@@ -537,11 +1077,48 @@ main > #portada {
    9. DEMO DE RESERVAS: RECURSOS, DETALLE Y FRANJAS
    ================================================== */
 
-/* Dos columnas: filtros y recursos a la izquierda, detalle a la derecha. */
+/* Dos columnas: filtros y recursos a la izquierda, detalle a la derecha.
+   El panel imita una ventana de aplicación: tarjeta blanca con sombra
+   y una barra superior con tres puntos y una dirección ficticia. */
 .reserva-panel {
+  position: relative; /* Referencia para la barra superior. */
+  padding: 64px 24px 24px; /* Arriba deja sitio a la barra de 40px. */
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 32px;
+  border: 1px solid var(--color-borde);
+  border-radius: 14px;
+  background-color: var(--color-fondo);
+  box-shadow: 0 24px 60px -30px rgba(21, 29, 45, 0.35);
+}
+
+/* Barra superior de la ventana con la dirección en el centro. */
+.reserva-panel::before {
+  content: "booku.app/reservar";
+  position: absolute;
+  inset: 0 0 auto; /* Pegada arriba y de lado a lado. */
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-bottom: 1px solid var(--color-borde);
+  border-radius: 14px 14px 0 0;
+  color: var(--color-texto-secundario);
+  background-color: var(--color-fondo-gris);
+  font-family: var(--fuente-mono);
+  font-size: 0.7rem;
+}
+
+/* Tres puntos: uno es el elemento y los otros dos son sus sombras. */
+.reserva-panel::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 18px;
+  width: 10px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: #ff5f57;
+  box-shadow: 16px 0 #febc2e, 32px 0 #28c840;
 }
 
 .reserva-detalle {
@@ -674,6 +1251,12 @@ main > #portada {
   transition: background-color 150ms ease;
 }
 
+/* La hora en Space Mono: las cifras quedan alineadas. */
+.franja span {
+  font-family: var(--fuente-mono);
+  font-size: 0.78rem;
+}
+
 .franja small {
   font-size: 0.72rem;
   font-weight: 400;
@@ -771,7 +1354,9 @@ main > #portada {
   margin: 0 auto; /* Centra el título aunque tenga ancho máximo. */
 }
 
-#equipo img {
+/* Foto de grupo: solo la imagen hija directa de la sección, para no
+   afectar a las fotos de las tarjetas. */
+#equipo > img {
   width: 100%;
   max-width: 760px;
   margin: 40px auto 0;
@@ -779,9 +1364,9 @@ main > #portada {
   border-radius: 12px;
 }
 
-/* Una tarjeta por persona. Con Flexbox la última fila, si está
-   incompleta, queda centrada como en Lovable. */
-#equipo ul {
+/* Cada lista es una fila de tarjetas centrada. Con Flexbox una fila
+   incompleta también queda centrada. */
+.equipo-lista {
   margin: 32px 0 0;
   padding: 0;
   display: flex;
@@ -791,44 +1376,104 @@ main > #portada {
   list-style: none;
 }
 
-#equipo li {
-  flex: 0 1 200px; /* No crece, puede encogerse y parte de 200px. */
-  padding: 20px 16px;
-  border: 1px solid var(--color-borde);
-  border-radius: 8px;
-  color: var(--color-texto-secundario);
-  font-size: 0.8rem;
+/* La segunda lista va pegada a la primera. */
+.equipo-lista + .equipo-lista {
+  margin-top: 16px;
 }
 
-#equipo li strong {
-  margin-bottom: 4px;
-  display: block; /* El nombre ocupa su propia línea. */
+.miembro {
+  flex: 0 1 200px; /* No crece, puede encogerse y parte de 200px. */
+  padding: 12px 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  background-color: var(--color-fondo);
+  color: var(--color-texto-secundario);
+  font-size: 0.8rem;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.miembro:hover {
+  transform: translateY(-4px);
+  border-color: #b8c4d6;
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.miembro img {
+  width: 100%;
+  margin-bottom: 12px;
+  display: block;
+  aspect-ratio: 4 / 5; /* Formato vertical igual para todas las fotos. */
+  object-fit: cover; /* Recorta la foto sin deformarla. */
+  object-position: center 25%; /* Prioriza la cara, que suele estar arriba. */
+  border-radius: var(--radio);
+  background-color: var(--color-primario-suave);
+}
+
+/* En esta foto la persona aparece más abajo y hay que bajar el recorte. */
+.miembro img.miembro-foto--recorte-bajo {
+  object-position: center 75%;
+}
+
+.miembro strong {
   color: var(--color-texto);
   font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+/* Etiqueta azul para los roles de Scrum. */
+.insignia {
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px; /* Forma de píldora. */
+  color: var(--color-primario);
+  background-color: var(--color-primario-suave);
+  font-family: var(--fuente-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
 }
 
 /* ==================================================
    12. PREGUNTAS FRECUENTES
    ================================================== */
 
+/* El contador numera las preguntas sin escribir los números en el HTML. */
 #faq {
-  background-color: var(--color-fondo-suave);
+  counter-reset: pregunta;
 }
 
 #faq h2 {
   margin-bottom: 32px;
 }
 
+/* Cada pregunta es una tarjeta independiente. */
 #faq details {
   max-width: 896px;
-  border-bottom: 1px solid var(--color-borde);
+  margin-bottom: 12px;
+  padding: 0 20px;
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  background-color: var(--color-fondo);
+  counter-increment: pregunta; /* Suma 1 al contador en cada tarjeta. */
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+#faq details:hover {
+  border-color: #b8c4d6;
+}
+
+#faq details[open] {
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px var(--color-primario-suave);
 }
 
 #faq summary {
-  padding: 24px 0;
+  padding: 20px 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   font-weight: 600;
   list-style: none; /* Quita el triángulo por defecto. */
@@ -840,24 +1485,43 @@ main > #portada {
   display: none;
 }
 
-/* Flecha dibujada con dos bordes de un cuadrado girado. */
+/* Número de la pregunta: 01, 02, 03... */
+#faq summary::before {
+  content: counter(pregunta, decimal-leading-zero);
+  color: var(--color-primario);
+  font-family: var(--fuente-mono);
+  font-size: 0.75rem;
+}
+
+/* Botón "+" dentro de un círculo; al girar 45° se convierte en "×". */
 #faq summary::after {
-  content: "";
-  width: 7px;
+  content: "+";
+  width: 28px;
   aspect-ratio: 1;
+  margin-left: auto; /* Lo empuja al extremo derecho. */
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-  border-right: 1.5px solid var(--color-texto-secundario);
-  border-bottom: 1.5px solid var(--color-texto-secundario);
-  transform: rotate(45deg);
-  transition: transform 150ms ease;
+  border: 1px solid var(--color-borde);
+  border-radius: 50%;
+  color: var(--color-texto-secundario);
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform 200ms ease, background-color 200ms ease, color 200ms ease;
 }
 
 #faq details[open] summary::after {
-  transform: rotate(-135deg); /* Apunta hacia arriba al abrirse. */
+  transform: rotate(45deg);
+  border-color: var(--color-primario);
+  color: #ffffff;
+  background-color: var(--color-primario);
 }
 
+/* La respuesta se alinea con el texto de la pregunta, no con el número. */
 #faq details p {
-  margin: 0 0 24px;
+  margin: 0 0 20px;
+  padding-left: 38px;
   color: var(--color-texto-secundario);
   font-size: 0.9rem;
 }
@@ -866,19 +1530,44 @@ main > #portada {
    13. PIE DE PÁGINA
    ================================================== */
 
+/* El pie repite la obsidiana de la portada para cerrar la web con el
+   mismo material, con las vetas más tenues. */
 .pie-pagina {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: 28px var(--margen-lateral);
   display: grid;
   grid-template-columns: auto 1fr; /* Logo a la izquierda y textos a la derecha. */
   align-items: center;
   column-gap: 24px;
+  border-top: 1px solid var(--color-marino-borde);
   color: var(--color-texto-claro);
-  background-color: var(--color-marino);
+  background-color: var(--color-obsidiana);
+  background-image:
+    linear-gradient(115deg, transparent 34%, rgba(255, 255, 255, 0.03) 43%,
+      rgba(255, 255, 255, 0.005) 50%, transparent 57%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 4px);
   font-size: 0.75rem;
+}
+
+/* Al ser absoluto, no ocupa ninguna celda de la rejilla del pie. */
+.pie-pagina::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url("../img/vetas.webp") 50% 40% / 100% auto repeat-y;
+  filter: hue-rotate(180deg) saturate(1.8); /* Mismo giro de dorado a azul. */
+  opacity: 0.3;
 }
 
 .pie-pagina .logo {
   grid-row: span 2; /* El logo ocupa la altura de los dos párrafos. */
+}
+
+.pie-pagina .logo img {
+  height: 40px;
 }
 
 .pie-pagina p {
@@ -887,7 +1576,40 @@ main > #portada {
 }
 
 /* ==================================================
-   14. PANTALLAS MEDIANAS
+   14. ANIMACIONES DE ENTRADA (añadidas por Jesús)
+   ================================================== */
+
+/* js/animaciones.js marca con .revelar los bloques de cada sección y
+   les añade .visible al entrar en pantalla. Solo se ocultan mientras
+   <html> tiene .animaciones-activas, que pone el propio JS: si el JS
+   no carga, todo se ve con normalidad. */
+.animaciones-activas .revelar {
+  opacity: 0;
+}
+
+/* Se usa una animación y no una transición para no pisar las
+   transiciones de hover de las tarjetas. Con "backwards" el estado
+   inicial se aplica durante el retraso y, al terminar, el elemento
+   vuelve a sus estilos normales. */
+.animaciones-activas .revelar.visible {
+  opacity: 1;
+  animation: entrada 700ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--retraso, 0ms) backwards;
+}
+
+@keyframes entrada {
+  from {
+    opacity: 0;
+    transform: translateY(24px); /* Sube 24px mientras aparece. */
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ==================================================
+   15. PANTALLAS MEDIANAS
    ================================================== */
 
 @media (max-width: 960px) {
@@ -895,6 +1617,11 @@ main > #portada {
      el botón de la cabecera como acceso principal. */
   .menu {
     display: none;
+  }
+
+  /* Sin menú, el margen automático empuja el botón a la derecha. */
+  .cabecera .boton {
+    margin-left: auto;
   }
 
   .reserva-panel {
@@ -909,7 +1636,7 @@ main > #portada {
 }
 
 /* ==================================================
-   15. PANTALLAS ESTRECHAS
+   16. PANTALLAS ESTRECHAS
    ================================================== */
 
 @media (max-width: 700px) {
@@ -918,13 +1645,54 @@ main > #portada {
     padding-bottom: 64px;
   }
 
+  /* La tarjeta de Art apila foto e historia; la foto se queda pequeña. */
+  .persona {
+    padding: 20px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .persona-foto {
+    width: 110px;
+  }
+
+  /* Las cifras pasan a una columna. */
+  .cifras {
+    padding: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  /* El recorrido pasa a ser vertical: la línea baja por la izquierda. */
+  #como-funciona > ol::before {
+    top: 6px;
+    bottom: 0;
+    left: 6px;
+    right: auto;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--color-primario), var(--color-acento) 60%, transparent);
+  }
+
+  #como-funciona > ol > li {
+    padding: 0 0 0 36px;
+  }
+
+  #como-funciona > ol > li::before {
+    top: 2px;
+  }
+
+  /* Menos relleno en la ventana de la demo para ganar espacio. */
+  .reserva-panel {
+    padding: 56px 14px 14px;
+  }
+
   main > #portada {
     padding-top: 64px;
     padding-bottom: 72px;
   }
 
-  #portada h1 {
-    font-size: 2.5rem;
+  .portada-texto {
+    font-size: 1rem;
   }
 
   main h2 {
@@ -932,8 +1700,8 @@ main > #portada {
   }
 
   /* Las rejillas de tres columnas pasan a una sola. */
-  #problema ol,
-  #como-funciona ol,
+  #problema > ol,
+  #como-funciona > ol,
   #para-quien {
     grid-template-columns: 1fr;
   }
@@ -967,6 +1735,11 @@ main > #portada {
     width: 100%;
   }
 
+  /* Dos tarjetas del equipo por fila: la mitad menos la mitad del hueco. */
+  .miembro {
+    flex-basis: calc(50% - 8px);
+  }
+
   .mis-reservas li {
     flex-direction: column;
     align-items: flex-start;
@@ -980,6 +1753,12 @@ main > #portada {
 
   .pie-pagina .logo {
     grid-row: auto;
+    justify-self: center; /* Centra el logo en su celda. */
+  }
+
+  /* En móvil el logo de la cabecera es algo más pequeño. */
+  .cabecera .logo img {
+    height: 28px;
   }
 
   .pie-pagina p {

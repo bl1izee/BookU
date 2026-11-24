@@ -4,14 +4,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BookU — Tu espacio a un click</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/favicon.png">
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/datos.js" defer></script>
   <script src="js/reservas.js" defer></script>
+  <script src="js/animaciones.js" defer></script>
 </head>
 <body>
 
+  <!-- Iconos de la página (sprite SVG). Están dentro del HTML para que
+       funcionen también al abrir el archivo directamente, sin servidor.
+       Se usan con <svg><use href="#nombre"></use></svg>.
+       Trazos basados en Lucide (https://lucide.dev), licencia ISC. -->
+  <svg class="sprite-iconos" aria-hidden="true" focusable="false">
+    <symbol id="ubicacion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+      <circle cx="12" cy="10" r="3"/>
+    </symbol>
+    <symbol id="buscar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.3-4.3"/>
+    </symbol>
+    <symbol id="reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 6v6l4 2"/>
+    </symbol>
+    <symbol id="calendario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 2v4"/>
+      <path d="M16 2v4"/>
+      <rect width="18" height="18" x="3" y="4" rx="2"/>
+      <path d="M3 10h18"/>
+      <path d="m9 16 2 2 4-4"/>
+    </symbol>
+    <symbol id="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6 9 17l-5-5"/>
+    </symbol>
+    <symbol id="birrete" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/>
+      <path d="M22 10v6"/>
+      <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>
+    </symbol>
+    <symbol id="pantalla" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="20" height="14" x="2" y="3" rx="2"/>
+      <path d="M8 21h8"/>
+      <path d="M12 17v4"/>
+    </symbol>
+    <symbol id="personas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </symbol>
+    <symbol id="cita" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/>
+      <path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/>
+    </symbol>
+  </svg>
+
   <header id="inicio" class="cabecera">
-    <a href="#inicio" class="logo">BookU</a>
+    <a href="#inicio" class="logo">
+      <img src="img/logo-booku.png" alt="BookU, volver al inicio" width="458" height="148">
+    </a>
     <nav class="menu">
       <ul>
         <li><a href="#problema">El problema</a></li>
@@ -29,31 +83,72 @@
   <main>
 
     <section id="portada">
-      <p class="etiqueta">TU ESPACIO A UN CLICK</p>
-      <h1>BookU, <span class="resaltado">tu espacio a un click</span></h1>
+      <h1>
+        <img src="img/logo-booku.png" class="portada-logo" alt="BookU" width="458" height="148">
+        <span class="eslogan">tu espacio a un click</span>
+      </h1>
       <p class="portada-texto">Consulta aulas, salas de estudio y material universitario desde un mismo lugar. Encuentra lo que necesitas y planifica tu próxima sesión con BookU.</p>
       <a href="#reservar" class="boton boton--primario">Probar una reserva</a>
       <a href="#como-funciona" class="boton boton--secundario">Cómo funciona</a>
-      <p class="portada-nota">Proyecto académico · Equipo 8 · Proyectos 3</p>
+      <img src="img/calendario-ejemplo.png" class="portada-maqueta" width="1000" height="502"
+        alt="Ejemplo conceptual de BookU: calendario semanal con reservas de aulas de lunes a viernes">
     </section>
 
     <section id="problema">
       <p class="etiqueta">EL PROBLEMA</p>
       <h2>Tu tiempo debería estar en el trabajo, no en buscar dónde hacerlo.</h2>
+
+      <!-- Usuario real del Sprint 2 (con su permiso). Cuando llegue su foto,
+           se sustituye el div .persona-foto por un <img>. -->
+      <article class="persona">
+        <div class="persona-foto" aria-hidden="true">AS</div>
+        <div class="persona-texto">
+          <p class="persona-nombre"><strong>Art Schmitz</strong> · 21 años · 4.º de MAIS en la U-tad</p>
+          <p>Por repetir asignaturas, a Art le quedan muchos huecos en el horario. Quiere aprovecharlos para estudiar, pero no sabe qué aulas están libres y acaba recorriendo pasillos.</p>
+          <blockquote class="persona-cita">
+            <svg aria-hidden="true" focusable="false"><use href="#cita"></use></svg>
+            <p>Últimamente siempre que quiero estudiar hay alguien de artes que me roba el aula.</p>
+          </blockquote>
+          <ol class="persona-recorrido" aria-label="Así le pasa a Art">
+            <li>Tiene 2 h libres</li>
+            <li>Recorre pasillos buscando un aula vacía</li>
+            <li>Se queda sin sitio donde trabajar</li>
+          </ol>
+        </div>
+      </article>
+
       <ol>
         <li>
+          <span class="icono" aria-hidden="true"><svg><use href="#ubicacion"></use></svg></span>
           <h3>01 · Necesitas un espacio.</h3>
           <p>Un trabajo en grupo, una sesión de estudio o una clase que preparar.</p>
         </li>
         <li>
+          <span class="icono" aria-hidden="true"><svg><use href="#buscar"></use></svg></span>
           <h3>02 · Buscas sin información suficiente.</h3>
           <p>Qué espacio encaja, cuándo está disponible y cómo organizarte.</p>
         </li>
         <li>
+          <span class="icono" aria-hidden="true"><svg><use href="#reloj"></use></svg></span>
           <h3>03 · El tiempo se va en encontrarlo.</h3>
           <p>Consultas y desplazamientos que interrumpen lo que venías a hacer.</p>
         </li>
       </ol>
+
+      <!-- Cifras con fuente, como pidió el profesor en el Sprint 2 -->
+      <div class="cifras">
+        <h3 class="cifras-titulo">El problema no es solo de un centro</h3>
+        <div class="cifra">
+          <p class="cifra-numero">341.682</p>
+          <p class="cifra-texto">estudiantes universitarios en la Comunidad de Madrid</p>
+        </div>
+        <div class="cifra">
+          <p class="cifra-numero">1,76 M</p>
+          <p class="cifra-texto">estudiantes universitarios en toda España</p>
+        </div>
+        <p class="cifras-fuente">Fuente: <a href="https://www.ciencia.gob.es/InfoGeneralPortal/detalle-publicacion/siiu/Datos-y-cifras-del-Sistema-Universitario-Espanol-2025-2026.html" target="_blank" rel="noopener">Ministerio de Ciencia, Innovación y Universidades, «Datos y cifras del Sistema Universitario Español 2025-2026»</a>.</p>
+      </div>
+
       <p class="nota">La propuesta de BookU busca hacer más cómoda la consulta de espacios y recursos. No sustituye ni describe los procedimientos actuales del centro.</p>
     </section>
 
@@ -63,34 +158,114 @@
       <p class="intro">De tener un plan a tener un espacio. BookU propone reunir la información que necesitas para organizarte.</p>
       <ol>
         <li>
+          <span class="icono" aria-hidden="true"><svg><use href="#buscar"></use></svg></span>
           <h3>01 · Encuentra</h3>
           <p>Consulta opciones y características para elegir el recurso que encaja con tu actividad.</p>
         </li>
         <li>
+          <span class="icono" aria-hidden="true"><svg><use href="#calendario"></use></svg></span>
           <h3>02 · Reserva</h3>
           <p>Elige una fecha y un horario disponibles para tu próxima sesión.</p>
         </li>
         <li>
+          <span class="icono" aria-hidden="true"><svg><use href="#check"></use></svg></span>
           <h3>03 · Organízate</h3>
           <p>Consulta tu reserva o cancélala si tus planes cambian.</p>
         </li>
       </ol>
+
+      <!-- Criterios de éxito del Sprint 1. Son objetivos, no resultados:
+           no cambiar el texto hasta tener mediciones reales. -->
+      <div class="cifras cifras--objetivos">
+        <h3 class="cifras-titulo">Lo que queremos conseguir</h3>
+        <div class="cifra">
+          <p class="cifra-etiqueta">Objetivo</p>
+          <p class="cifra-numero">−30 %</p>
+          <p class="cifra-texto">de tiempo para encontrar y reservar un espacio</p>
+        </div>
+        <div class="cifra">
+          <p class="cifra-etiqueta">Objetivo</p>
+          <p class="cifra-numero">4 de 5</p>
+          <p class="cifra-texto">estudiantes encuentran sin ayuda un espacio que cumple lo que necesitan</p>
+        </div>
+        <p class="cifras-fuente">Criterios de éxito definidos por el equipo en el Sprint 1. Todavía no son resultados: se medirán en las pruebas con estudiantes.</p>
+      </div>
+
+      <!-- Comparativa con la competencia (análisis del Sprint 2) -->
+      <div class="competencia">
+        <h3 class="cifras-titulo">¿Por qué BookU?</h3>
+        <div class="tabla-contenedor">
+          <table>
+            <caption class="solo-lectores">Comparativa de BookU con Untis, LibCal y Robin</caption>
+            <thead>
+              <tr>
+                <th scope="col">Lo que importa</th>
+                <th scope="col">Untis</th>
+                <th scope="col">LibCal</th>
+                <th scope="col">Robin</th>
+                <th scope="col" class="columna-booku">BookU</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Reservar sin avisar a secretaría</th>
+                <td class="no"><span aria-hidden="true">✗</span><span class="solo-lectores">No</span></td>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="si columna-booku"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Interfaz moderna e intuitiva</th>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="no"><span aria-hidden="true">✗</span><span class="solo-lectores">No</span></td>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="si columna-booku"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Pensado para universidades</th>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="si columna-booku"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Sin coste por aula</th>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="no"><span aria-hidden="true">✗</span><span class="solo-lectores">No</span></td>
+                <td class="no"><span aria-hidden="true">✗</span><span class="solo-lectores">No</span></td>
+                <td class="si columna-booku"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Sin límite de aulas</th>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="no"><span aria-hidden="true">✗</span><span class="solo-lectores">No</span></td>
+                <td class="si"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+                <td class="si columna-booku"><span aria-hidden="true">✓</span><span class="solo-lectores">Sí</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cifras-fuente">Análisis de competencia del equipo (Sprints 1 y 2).</p>
+      </div>
     </section>
 
     <section id="para-quien">
       <p class="etiqueta">PARA QUIÉN</p>
       <h2>Distintos planes. Un mismo punto de encuentro.</h2>
       <article>
+        <span class="icono" aria-hidden="true"><svg><use href="#birrete"></use></svg></span>
         <h3>Estudiantes</h3>
         <p>Organizar sesiones de estudio y trabajos en grupo.</p>
         <small>Uso previsto en la propuesta</small>
       </article>
       <article>
+        <span class="icono" aria-hidden="true"><svg><use href="#pantalla"></use></svg></span>
         <h3>Docentes</h3>
         <p>Encontrar aulas adecuadas para su actividad.</p>
         <small>Uso previsto en la propuesta</small>
       </article>
       <article>
+        <span class="icono" aria-hidden="true"><svg><use href="#personas"></use></svg></span>
         <h3>Personal universitario</h3>
         <p>Facilitar la coordinación de recursos, reservas e incidencias.</p>
         <small>Uso previsto en la propuesta</small>
@@ -159,14 +334,48 @@
       <p class="etiqueta">EQUIPO 8 · PROYECTOS 3</p>
       <h2>El equipo</h2>
       <img src="./img/equipo.jpeg" alt="Integrantes del Equipo 8 presentando BookU en el aula">
-      <ul>
-        <li><strong>Daniel Peralta Llamas</strong> — Full Stack · Product Owner</li>
-        <li><strong>Harsukhman Preet Singh Kaur</strong> — Frontend y Portavoz · Scrum Master</li>
-        <li><strong>Jesús León Romero Atienza</strong> — Diseño Digital</li>
-        <li><strong>Pablo Martín Martín</strong> — Full Stack</li>
-        <li><strong>Sergio Mendo Expósito</strong> — Full Stack</li>
-        <li><strong>Sergio Ponce Plaza</strong> — Full Stack</li>
-        <li><strong>Rafael Ceres Martínez</strong> — Frontend</li>
+      <!-- Dos listas para que Product Owner y Scrum Master queden en la
+           primera fila, como en la versión de Lovable. -->
+      <ul class="equipo-lista">
+        <li class="miembro">
+          <img src="img/equipo/daniel-peralta.webp" alt="" loading="lazy">
+          <strong>Daniel Peralta Llamas</strong>
+          <span>Full Stack</span>
+          <span class="insignia">Product Owner</span>
+        </li>
+        <li class="miembro">
+          <img src="img/equipo/harsukhman-preet.webp" alt="" loading="lazy">
+          <strong>Harsukhman Preet Singh Kaur</strong>
+          <span>Frontend y Portavoz</span>
+          <span class="insignia">Scrum Master</span>
+        </li>
+      </ul>
+      <ul class="equipo-lista">
+        <li class="miembro">
+          <img src="img/equipo/jesus-leon.png" alt="" loading="lazy" class="miembro-foto--recorte-bajo">
+          <strong>Jesús León Romero Atienza</strong>
+          <span>Diseño Digital</span>
+        </li>
+        <li class="miembro">
+          <img src="img/equipo/pablo-martin.webp" alt="" loading="lazy">
+          <strong>Pablo Martín Martín</strong>
+          <span>Full Stack</span>
+        </li>
+        <li class="miembro">
+          <img src="img/equipo/sergio-mendo.webp" alt="" loading="lazy">
+          <strong>Sergio Mendo Expósito</strong>
+          <span>Full Stack</span>
+        </li>
+        <li class="miembro">
+          <img src="img/equipo/sergio-ponce.webp" alt="" loading="lazy">
+          <strong>Sergio Ponce Plaza</strong>
+          <span>Full Stack</span>
+        </li>
+        <li class="miembro">
+          <img src="img/equipo/rafael-ceres.webp" alt="" loading="lazy">
+          <strong>Rafael Ceres Martínez</strong>
+          <span>Frontend</span>
+        </li>
       </ul>
     </section>
 
@@ -203,7 +412,9 @@
   </main>
 
   <footer class="pie-pagina">
-    <a href="#inicio" class="logo">BookU</a>
+    <a href="#inicio" class="logo">
+      <img src="img/logo-booku.png" alt="BookU, volver al inicio" width="458" height="148">
+    </a>
     <p>BookU · Equipo 8 · Proyectos 3</p>
     <p>Proyecto académico. Demostración con datos ficticios.</p>
   </footer>
