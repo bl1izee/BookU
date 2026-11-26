@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookU — Reservas</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/datos.js" defer></script>
+  <script src="js/reservas.js" defer></script>
+</head>
+<body>
+
+  <main>
+    <!-- Solo la parte funcional de las reservas (misma lógica y estilos que index.html) -->
+    <section id="reservar">
+      <p class="enlace-pagina"><a href="index.html" class="boton boton--primario">Volver a la página principal</a></p>
+      <h2>Reservar</h2>
+
+      <div class="reserva-controles">
+        <div id="tabs-categorias" role="group" aria-label="Categoría de reserva"></div>
+        <div class="campo-nombre">
+          <label for="nombre">Nombre de prueba</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Ej. Ana" autocomplete="off">
+        </div>
+      </div>
+
+      <div id="dias" role="group" aria-label="Día"></div>
+
+      <p id="mensaje" class="mensaje" role="status" aria-live="polite"></p>
+
+      <div class="reserva-panel">
+        <div class="reserva-columna">
+          <div id="filtros"></div>
+          <div id="lista-recursos"></div>
+        </div>
+        <div class="reserva-detalle">
+          <div id="detalle-recurso"></div>
+          <div id="franjas"></div>
+        </div>
+      </div>
+
+      <div id="mis-reservas" class="mis-reservas"></div>
+
+      <!-- Pop-up de confirmación y de reserva hecha (lo rellena reservas.js) -->
+      <dialog id="popup" class="popup" aria-labelledby="popup-titulo">
+        <h3 id="popup-titulo"></h3>
+        <p id="popup-texto"></p>
+        <div class="popup-botones">
+          <button type="button" id="popup-cancelar" class="popup-boton popup-boton--secundario">Cancelar</button>
+          <button type="button" id="popup-aceptar" class="popup-boton popup-boton--primario">Aceptar</button>
+        </div>
+      </dialog>
+    </section>
+  </main>
+
+</body>
+</html>

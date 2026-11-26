@@ -370,8 +370,8 @@ function pintarFranjas() {
             texto = "Libre";
         }
 
-        //Las ocupadas NO se deshabilitan: al pulsarlas sale el pop-up de aviso
-        const deshabilitada = tipo === "pasada" || tipo === "mia";
+        //Las ocupadas y las pasadas NO se deshabilitan: al pulsarlas sale un pop-up de aviso
+        const deshabilitada = tipo === "mia";
 
         html += `
             <button type="button" class="franja ${tipo}" data-hora="${hora}" data-tipo="${tipo}"
@@ -453,6 +453,19 @@ function avisarOcupada(recurso, hora, quien) {
     );
 }
 
+//Pop-up cuando se pulsa una franja cuya hora ya ha pasado
+function avisarPasada(recurso, fecha, hora) {
+    return abrirPopup(
+        "Franja no disponible",
+        `No puedes reservar ${recurso.nombre}\n` +
+        `${fechaLarga(fecha)}, ${hora} – ${horaFin(hora)}:\n` +
+        "esa hora ya ha pasado.\n\n" +
+        "Elige otro horario u otro día.",
+        "Entendido",
+        false
+    );
+}
+
 //Abre el pop-up y devuelve una promesa: true si pulsa Aceptar, false si cancela
 //(botón Cancelar, tecla Escape). Con conCancelar = false solo sale el botón Aceptar.
 function abrirPopup(titulo, texto, textoAceptar = "Aceptar", conCancelar = true) {
@@ -486,17 +499,17 @@ async function reservar(hora) {
         return;
     }
 
+    //Es de una hora que ya ha pasado
+    if (yaHaPasado(estado.fecha, hora)) {
+        avisarPasada(recurso, estado.fecha, hora);
+        render();
+        return;
+    }
+
     //Ha rellenado el nombre
     if (!nombre) {
         mostrarMensaje("Escribe tu nombre de prueba para reservar.", "error");
         $("nombre").focus();
-        return;
-    }
-
-    //Es de una hora que ya ha pasado
-    if (yaHaPasado(estado.fecha, hora)) {
-        mostrarMensaje("Esta franja ya ha pasado. Elige otro horario.", "error");
-        render();
         return;
     }
 
@@ -514,7 +527,7 @@ async function reservar(hora) {
 
     //Puede haber pasado la hora mientras el pop-up estaba abierto
     if (yaHaPasado(fecha, hora)) {
-        mostrarMensaje("Esta franja ya ha pasado. Elige otro horario.", "error");
+        avisarPasada(recurso, fecha, hora);
         render();
         return;
     }

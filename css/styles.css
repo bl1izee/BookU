@@ -1283,6 +1283,12 @@ main > #portada::after {
   background-color: var(--color-fondo-gris);
 }
 
+/* Se puede pulsar (sale un aviso), pero no reservar. Lleva #reservar
+   para ganar a "#reservar button { cursor: pointer; }". */
+#reservar .franja.pasada {
+  cursor: not-allowed;
+}
+
 .franja.mia {
   color: #ffffff;
   background-color: var(--color-primario);
@@ -1851,4 +1857,9 @@ main > #portada::after {
   .pie-pagina p {
     text-align: center;
   }
+}
+
+/* Enlace entre index.html y reservas.html */
+.enlace-pagina {
+  margin: 0 0 24px;
 }
