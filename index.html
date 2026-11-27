@@ -4,12 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BookU — Tu espacio a un click</title>
+  <meta name="description" content="BookU: consulta y reserva aulas, salas de estudio y material universitario desde un mismo lugar.">
+  <!-- Vista previa al compartir el enlace (WhatsApp, Teams, redes) -->
+  <meta property="og:title" content="BookU — Tu espacio a un click">
+  <meta property="og:description" content="Consulta y reserva aulas, salas de estudio y material universitario desde un mismo lugar.">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="apple-touch-icon" href="img/favicon.png">
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/datos.js" defer></script>
   <script src="js/reservas.js" defer></script>
   <script src="js/animaciones.js" defer></script>
+  <script src="js/cabecera.js" defer></script>
 </head>
 <body>
 
@@ -69,12 +75,13 @@
     <nav class="menu">
       <ul>
         <li><a href="#problema">El problema</a></li>
-        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#como-funciona">La solución</a></li>
         <li><a href="#para-quien">Para quién</a></li>
         <li><a href="#proyecto">El proyecto</a></li>
         <li><a href="#reservar">Reservar</a></li>
         <li><a href="#video">Vídeo</a></li>
         <li><a href="#equipo">El equipo</a></li>
+        <li><a href="#faq">Preguntas</a></li>
       </ul>
     </nav>
     <a href="#reservar" class="boton boton--primario">Probar BookU</a>
@@ -89,22 +96,21 @@
       </h1>
       <p class="portada-texto">Consulta aulas, salas de estudio y material universitario desde un mismo lugar. Encuentra lo que necesitas y planifica tu próxima sesión con BookU.</p>
       <a href="#reservar" class="boton boton--primario">Probar una reserva</a>
-      <a href="#como-funciona" class="boton boton--secundario">Cómo funciona</a>
-      <img src="img/calendario-ejemplo.png" class="portada-maqueta" width="1000" height="502"
-        alt="Ejemplo conceptual de BookU: calendario semanal con reservas de aulas de lunes a viernes">
+      <a href="#problema" class="boton boton--secundario">Cómo funciona</a>
     </section>
 
     <section id="problema">
       <p class="etiqueta">EL PROBLEMA</p>
       <h2>Tu tiempo debería estar en el trabajo, no en buscar dónde hacerlo.</h2>
 
-      <!-- Usuario real del Sprint 2 (con su permiso). Cuando llegue su foto,
-           se sustituye el div .persona-foto por un <img>. -->
+      <!-- Usuario real del Sprint 2 (foto publicada con su permiso) -->
       <article class="persona">
-        <div class="persona-foto" aria-hidden="true">AS</div>
+        <img src="img/art-schmitz.webp" class="persona-foto" width="640" height="800" loading="lazy"
+          alt="Art Schmitz, sonriendo, sentado en una sala de la U-tad">
+
         <div class="persona-texto">
           <p class="persona-nombre"><strong>Art Schmitz</strong> · 21 años · 4.º de MAIS en la U-tad</p>
-          <p>Por repetir asignaturas, a Art le quedan muchos huecos en el horario. Quiere aprovecharlos para estudiar, pero no sabe qué aulas están libres y acaba recorriendo pasillos.</p>
+          <p>Art tiene muchos huecos en el horario que quiere aprovechar para estudiar, pero no sabe qué aulas están libres y acaba recorriendo pasillos, perdiendo tiempo valioso.</p>
           <blockquote class="persona-cita">
             <svg aria-hidden="true" focusable="false"><use href="#cita"></use></svg>
             <p>Últimamente siempre que quiero estudiar hay alguien de artes que me roba el aula.</p>
@@ -137,7 +143,7 @@
 
       <!-- Cifras con fuente, como pidió el profesor en el Sprint 2 -->
       <div class="cifras">
-        <h3 class="cifras-titulo">El problema no es solo de un centro</h3>
+        <h3 class="cifras-titulo">El problema no es solo en un solo centro</h3>
         <div class="cifra">
           <p class="cifra-numero">341.682</p>
           <p class="cifra-texto">estudiantes universitarios en la Comunidad de Madrid</p>
@@ -146,15 +152,30 @@
           <p class="cifra-numero">1,76 M</p>
           <p class="cifra-texto">estudiantes universitarios en toda España</p>
         </div>
-        <p class="cifras-fuente">Fuente: <a href="https://www.ciencia.gob.es/InfoGeneralPortal/detalle-publicacion/siiu/Datos-y-cifras-del-Sistema-Universitario-Espanol-2025-2026.html" target="_blank" rel="noopener">Ministerio de Ciencia, Innovación y Universidades, «Datos y cifras del Sistema Universitario Español 2025-2026»</a>.</p>
+        <div class="cifra cifra--destacada">
+          <p class="cifra-numero">269 M</p>
+          <p class="cifra-texto">estudiantes universitarios en todo el mundo (2024)</p>
+        </div>
+        <ul class="fuentes" aria-label="Fuentes de las cifras">
+          <li>
+            <a href="https://www.ciencia.gob.es/InfoGeneralPortal/detalle-publicacion/siiu/Datos-y-cifras-del-Sistema-Universitario-Espanol-2025-2026.html" target="_blank" rel="noopener">
+              <span class="fuente-etiqueta">Fuente</span>
+              <span>Ministerio de Ciencia, Innovación y Universidades · Datos y cifras del Sistema Universitario Español 2025-2026</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.exteriores.gob.es/RepresentacionesPermanentes/unesco/es/Comunicacion/Noticias/Paginas/Articulos/El-n%C3%BAmero-de-estudiantes-en-ense%C3%B1anza-superior-crece-m%C3%A1s-del-doble-en-20-a%C3%B1os,-pero-persisten-las-desigualdades.aspx" target="_blank" rel="noopener">
+              <span class="fuente-etiqueta">Fuente</span>
+              <span>UNESCO · Informe mundial sobre tendencias de la educación superior (2026)</span>
+            </a>
+          </li>
+        </ul>
       </div>
-
-      <p class="nota">La propuesta de BookU busca hacer más cómoda la consulta de espacios y recursos. No sustituye ni describe los procedimientos actuales del centro.</p>
     </section>
 
     <section id="como-funciona">
       <p class="etiqueta">LA SOLUCIÓN</p>
-      <h2>Menos vueltas. Tres pasos.</h2>
+      <h2>Menos vueltas. Tres pasos en menos de un minuto.</h2>
       <p class="intro">De tener un plan a tener un espacio. BookU propone reunir la información que necesitas para organizarte.</p>
       <ol>
         <li>
@@ -177,7 +198,7 @@
       <!-- Criterios de éxito del Sprint 1. Son objetivos, no resultados:
            no cambiar el texto hasta tener mediciones reales. -->
       <div class="cifras cifras--objetivos">
-        <h3 class="cifras-titulo">Lo que queremos conseguir</h3>
+        <h3 class="cifras-titulo">Criterios de éxito</h3>
         <div class="cifra">
           <p class="cifra-etiqueta">Objetivo</p>
           <p class="cifra-numero">−30 %</p>
@@ -188,12 +209,11 @@
           <p class="cifra-numero">4 de 5</p>
           <p class="cifra-texto">estudiantes encuentran sin ayuda un espacio que cumple lo que necesitan</p>
         </div>
-        <p class="cifras-fuente">Criterios de éxito definidos por el equipo en el Sprint 1. Todavía no son resultados: se medirán en las pruebas con estudiantes.</p>
       </div>
 
       <!-- Comparativa con la competencia (análisis del Sprint 2) -->
       <div class="competencia">
-        <h3 class="cifras-titulo">¿Por qué BookU?</h3>
+        <h3 class="cifras-titulo">Qué nos diferencia de la competencia</h3>
         <div class="tabla-contenedor">
           <table>
             <caption class="solo-lectores">Comparativa de BookU con Untis, LibCal y Robin</caption>
@@ -245,32 +265,27 @@
             </tbody>
           </table>
         </div>
-        <p class="cifras-fuente">Análisis de competencia del equipo (Sprints 1 y 2).</p>
       </div>
     </section>
 
     <section id="para-quien">
       <p class="etiqueta">PARA QUIÉN</p>
-      <h2>Distintos planes. Un mismo punto de encuentro.</h2>
+      <h2>Los segmentos de mercado a los que se dirige BookU.</h2>
       <article>
         <span class="icono" aria-hidden="true"><svg><use href="#birrete"></use></svg></span>
         <h3>Estudiantes</h3>
         <p>Organizar sesiones de estudio y trabajos en grupo.</p>
-        <small>Uso previsto en la propuesta</small>
       </article>
       <article>
         <span class="icono" aria-hidden="true"><svg><use href="#pantalla"></use></svg></span>
         <h3>Docentes</h3>
         <p>Encontrar aulas adecuadas para su actividad.</p>
-        <small>Uso previsto en la propuesta</small>
       </article>
       <article>
         <span class="icono" aria-hidden="true"><svg><use href="#personas"></use></svg></span>
         <h3>Personal universitario</h3>
         <p>Facilitar la coordinación de recursos, reservas e incidencias.</p>
-        <small>Uso previsto en la propuesta</small>
       </article>
-      <p class="nota">En esta demostración puedes reservar y cancelar aulas, salas, boxes y material con un nombre de prueba. La gestión administrativa y de incidencias es una función prevista, no implementada.</p>
     </section>
 
     <section id="proyecto">
@@ -289,7 +304,7 @@
       <p class="etiqueta">PRUÉBALO TÚ</p>
       <h2>Tu próxima sesión empieza aquí.</h2>
       <p class="intro">Elige un espacio o material y consulta su disponibilidad.</p>
-      <p class="aviso"><strong>Demostración con datos ficticios.</strong> Las reservas se guardan solo en este navegador y no se comparten entre usuarios. No es un servicio oficial de U-tad.</p>
+      <p class="aviso"><strong>Demostración con datos ficticios.</strong> Las reservas se guardan solo en este navegador y no se comparten entre usuarios.</p>
       <p class="enlace-pagina"><a href="reservas.html" class="boton boton--primario">Abrir las reservas en una página aparte</a></p>
 
       <div class="reserva-controles">
@@ -343,10 +358,21 @@
 
     <section id="equipo">
       <p class="etiqueta">EQUIPO 8 · PROYECTOS 3</p>
-      <h2>El equipo</h2>
-      <img src="./img/equipo.jpeg" alt="Integrantes del Equipo 8 presentando BookU en el aula">
-      <!-- Dos listas para que Product Owner y Scrum Master queden en la
+
+      <!-- Parte 1: el equipo como grupo. La foto es requisito del Sprint 3;
+           el título va encima de la foto, sobre una franja oscura. -->
+      <figure class="equipo-portada">
+        <img src="./img/equipo.jpeg" width="2048" height="1536"
+          alt="Los siete integrantes del Equipo 8 con el pulgar hacia arriba delante de la pantalla con la presentación de BookU">
+        <figcaption class="equipo-portada-texto">
+          <h2>Somos BookU</h2>
+        </figcaption>
+      </figure>
+
+      <!-- Parte 2: las personas y sus roles.
+           Dos listas para que Product Owner y Scrum Master queden en la
            primera fila, como en la versión de Lovable. -->
+      <h3 class="equipo-subtitulo">Roles de BookU</h3>
       <ul class="equipo-lista">
         <li class="miembro">
           <img src="img/equipo/daniel-peralta.webp" alt="" loading="lazy">
@@ -363,7 +389,7 @@
       </ul>
       <ul class="equipo-lista">
         <li class="miembro">
-          <img src="img/equipo/jesus-leon.png" alt="" loading="lazy" class="miembro-foto--recorte-bajo">
+          <img src="img/equipo/jesus-leon.webp" alt="" loading="lazy" class="miembro-foto--recorte-bajo">
           <strong>Jesús León Romero Atienza</strong>
           <span>Diseño Digital</span>
         </li>
@@ -420,6 +446,18 @@
       </details>
     </section>
 
+    <!-- Llamada a la acción final: la estructura de la web que pide el
+         enunciado es problema → solución → vídeo → llamada a la acción. -->
+    <section id="empieza">
+      <p class="etiqueta">EMPIEZA AHORA</p>
+      <h2>Tu próximo espacio está a un click.</h2>
+      <p class="intro">Deja de recorrer pasillos. Encuentra un aula libre, resérvala y dedica tu tiempo a lo que de verdad importa.</p>
+      <div class="empieza-botones">
+        <a href="#reservar" class="boton boton--primario">Probar una reserva</a>
+        <a href="#video" class="boton boton--secundario">Ver el vídeo</a>
+      </div>
+    </section>
+
   </main>
 
   <footer class="pie-pagina">
@@ -427,7 +465,7 @@
       <img src="img/logo-booku.png" alt="BookU, volver al inicio" width="458" height="148">
     </a>
     <p>BookU · Equipo 8 · Proyectos 3</p>
-    <p>Proyecto académico. Demostración con datos ficticios.</p>
+    <a href="#inicio" class="volver-arriba">Volver arriba</a>
   </footer>
 
 </body>

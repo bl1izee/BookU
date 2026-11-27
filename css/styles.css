@@ -66,8 +66,9 @@
   --color-texto-secundario: #58616f;
   --color-texto-claro: #a6aec0; /* Texto secundario sobre fondo marino. */
   --color-fondo: #ffffff;
-  --color-fondo-azul: #e9f0ff; /* Secciones alternas, unidas con degradados. */
-  --color-obsidiana: #03050c; /* Fondo de la portada y del pie. */
+  --color-fondo-azul: #e9f0ff; /* Fondo de tarjetas y franjas de cifras. */
+  --color-seccion-azul: #dbe6ff; /* Secciones azules: más marcado para distinguirlas. */
+  --color-obsidiana: #03050c; /* Portada, secciones oscuras y pie. */
   --color-fondo-gris: #eff2f6;
   --color-borde: #d9dfe6;
   --color-libre: #e5f7eb;
@@ -151,19 +152,165 @@ main > section {
   padding: 88px var(--margen-lateral); /* 88px arriba y abajo; lateral calculado. */
 }
 
-/* Secciones azules alternas. Empiezan y terminan en blanco, así el
-   paso desde la sección anterior y hacia la siguiente es un degradado
-   suave y no un corte. */
-#como-funciona,
+/* Ritmo de fondos: se alternan tres tonos para que nunca haya dos
+   secciones seguidas iguales.
+   Portada (obsidiana) → 01 blanco → 02 obsidiana → 03 blanco →
+   04 azul → 05 blanco → 06 obsidiana → 07 blanco → 08 azul → pie. */
+
+/* Secciones azules. Entran y salen con un degradado corto desde el
+   blanco: se nota dónde empiezan sin que el cambio sea brusco. */
 #proyecto,
-#reservar,
 #faq {
   background-image: linear-gradient(
     var(--color-fondo) 0,
-    var(--color-fondo-azul) 140px,
-    var(--color-fondo-azul) calc(100% - 140px),
+    var(--color-seccion-azul) 56px,
+    var(--color-seccion-azul) calc(100% - 56px),
     var(--color-fondo) 100%
   );
+}
+
+/* Secciones oscuras, con la misma obsidiana que la portada.
+   En vez de reescribir el color de cada elemento, se cambian aquí las
+   variables de texto y borde: todo lo de dentro las hereda. */
+#como-funciona,
+#video,
+#empieza {
+  --color-texto: #ffffff;
+  --color-texto-secundario: var(--color-texto-claro);
+  --color-borde: var(--color-marino-borde);
+  position: relative; /* Referencia para las vetas de ::before. */
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--color-texto);
+  /* El color base es blanco, no obsidiana: si la sección empieza en
+     medio píxel, el borde se mezcla con blanco y no aparece una línea
+     oscura. La obsidiana la pinta la última capa. */
+  background-color: var(--color-fondo);
+  /* Capas, de arriba abajo: líneas finas, resplandor azul y el fondo con
+     su difuminado de entrada y salida. Pasar del blanco al negro
+     directamente daría un gris sucio, así que el degradado atraviesa el
+     azul de la marca: se lee como un resplandor y no como una mancha. */
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 4px),
+    radial-gradient(70% 40% at 50% 220px, rgba(21, 93, 252, 0.2), transparent 70%),
+    linear-gradient(
+      var(--color-fondo) 0,
+      #dbe6ff 30px,
+      #8ea8e8 70px,
+      #243c86 120px,
+      #0a1230 170px,
+      var(--color-obsidiana) 220px,
+      var(--color-obsidiana) calc(100% - 220px),
+      #0a1230 calc(100% - 170px),
+      #243c86 calc(100% - 120px),
+      #8ea8e8 calc(100% - 70px),
+      #dbe6ff calc(100% - 30px),
+      var(--color-fondo) 100%
+    );
+}
+
+/* Más relleno arriba y abajo para que el contenido empiece ya sobre
+   la obsidiana y no sobre el difuminado. */
+main > #como-funciona,
+main > #video {
+  padding-top: 210px;
+  padding-bottom: 210px;
+}
+
+/* Vetas muy tenues, como en el pie, para que se lea como obsidiana.
+   La máscara las esconde en la zona del difuminado. */
+#como-funciona::before,
+#video::before,
+#empieza::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url("../img/vetas.webp") 50% 0 / 100% auto repeat-y;
+  filter: hue-rotate(180deg) saturate(1.8);
+  opacity: 0.18;
+  -webkit-mask-image: linear-gradient(transparent 150px, #000 260px, #000 calc(100% - 260px), transparent calc(100% - 150px));
+  mask-image: linear-gradient(transparent 150px, #000 260px, #000 calc(100% - 260px), transparent calc(100% - 150px));
+}
+
+/* Las tarjetas blancas dentro de una sección oscura recuperan los
+   colores normales: así destacan como tarjetas sobre el fondo. */
+#como-funciona .cifras--objetivos,
+#como-funciona .tabla-contenedor {
+  --color-texto: #151d2d;
+  --color-texto-secundario: #58616f;
+  --color-borde: #d9dfe6;
+  color: var(--color-texto);
+}
+
+/* Sobre oscuro, el número de la etiqueta usa el azul claro. */
+#como-funciona .etiqueta::before,
+#video .etiqueta::before,
+#empieza .etiqueta::before {
+  color: var(--color-acento);
+  background-image: linear-gradient(var(--color-acento), var(--color-acento));
+}
+
+/* Llamada a la acción final. Usa la obsidiana de las secciones oscuras,
+   pero solo se difumina por arriba: por abajo sigue oscura y se une con
+   el pie, como un único bloque de cierre. */
+main > #empieza {
+  padding-top: 210px;
+  padding-bottom: 104px;
+  text-align: center;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 4px),
+    radial-gradient(60% 55% at 50% 55%, rgba(21, 93, 252, 0.28), transparent 70%),
+    linear-gradient(
+      var(--color-fondo) 0,
+      #dbe6ff 30px,
+      #8ea8e8 70px,
+      #243c86 120px,
+      #0a1230 170px,
+      var(--color-obsidiana) 220px
+    );
+}
+
+/* Las vetas solo se esconden en la zona del difuminado de arriba. */
+#empieza::before {
+  -webkit-mask-image: linear-gradient(transparent 150px, #000 260px);
+  mask-image: linear-gradient(transparent 150px, #000 260px);
+  opacity: 0.28;
+}
+
+/* Etiqueta, título y texto centrados. */
+#empieza .etiqueta,
+#empieza h2,
+#empieza .intro {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#empieza h2 {
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+}
+
+#empieza .intro {
+  max-width: 560px;
+  font-size: 1.05rem;
+}
+
+.empieza-botones {
+  margin-top: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.empieza-botones .boton {
+  min-height: 48px;
+}
+
+/* Borde casi invisible entre esta sección y el pie: se leen como un
+   solo bloque de cierre. */
+main:has(> #empieza) + .pie-pagina {
+  border-top-color: rgba(255, 255, 255, 0.06);
 }
 
 /* Nombre de la sección (EL PROBLEMA, LA SOLUCIÓN...) encima de cada
@@ -235,9 +382,12 @@ main h2 {
   height: 22px;
 }
 
-/* Sobre las secciones azules el cuadrado va en blanco para destacar. */
+/* En la sección oscura el cuadrado es azul translúcido y el trazo,
+   azul claro, para que se vea sobre la obsidiana. */
 #como-funciona .icono {
-  background-color: var(--color-fondo);
+  border-color: rgba(0, 166, 244, 0.35);
+  color: var(--color-acento);
+  background-color: rgba(21, 93, 252, 0.15);
 }
 
 /* En las tarjetas, el icono se rellena de azul al pasar el ratón. */
@@ -252,14 +402,6 @@ main h2 {
   margin: 16px 0 0;
   color: var(--color-texto-secundario);
   font-size: 0.9rem;
-}
-
-/* Aclaraciones al final de una sección. */
-.nota {
-  max-width: 820px;
-  margin: 32px 0 0;
-  color: var(--color-texto-secundario);
-  font-size: 0.85rem;
 }
 
 /* Botones en forma de píldora con una flecha que se mueve al pasar
@@ -328,21 +470,35 @@ main h2 {
    3. CABECERA Y MENÚ
    ================================================== */
 
-/* Cabecera fija arriba al desplazarse. El fondo es semitransparente
-   y desenfoca lo que pasa por debajo. */
+/* Cabecera fija arriba al desplazarse. Por defecto es obsidiana casi
+   opaca con desenfoque: así se lee sobre cualquier sección, también
+   sobre las blancas (antes, el marino al 82 % sobre blanco daba gris).
+   El margen negativo la superpone a la portada, para que arriba del
+   todo pueda volverse transparente y fundirse con las vetas. */
 .cabecera {
   position: sticky;
   top: 0;
   z-index: 10; /* Por encima del contenido de la página. */
   min-height: var(--altura-cabecera);
+  margin-bottom: calc(-1 * var(--altura-cabecera));
   padding: 0 var(--margen-lateral);
   display: flex;
   align-items: center;
   gap: 24px;
   border-bottom: 1px solid var(--color-marino-borde);
-  background-color: rgba(4, 9, 36, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); /* Safari necesita el prefijo. */
+  background-color: rgba(3, 5, 12, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px); /* Safari necesita el prefijo. */
+  transition: background-color 250ms ease, border-color 250ms ease,
+    backdrop-filter 250ms ease;
+}
+
+/* Arriba del todo (lo decide js/cabecera.js): sin fondo ni borde. */
+.cabecera--transparente {
+  border-bottom-color: transparent;
+  background-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* Los márgenes automáticos centran el menú entre el logo y los botones. */
@@ -372,15 +528,42 @@ main h2 {
   list-style: none;
 }
 
+/* Enlaces blancos (antes gris apagado) con una línea azul debajo que
+   crece desde el centro al pasar el ratón o en la sección activa. */
 .menu a {
-  color: var(--color-texto-claro);
-  font-size: 0.8rem;
+  position: relative; /* Referencia para la línea de ::after. */
+  padding: 6px 0;
+  display: block;
+  white-space: nowrap; /* «El problema» nunca se parte en dos líneas. */
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.9rem;
+  font-weight: 500;
   text-decoration: none;
   transition: color 150ms ease;
 }
 
-.menu a:hover {
+.menu a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background-color: var(--color-acento);
+  box-shadow: 0 0 8px var(--color-acento);
+  transform: scaleX(0); /* Empieza sin anchura... */
+  transition: transform 200ms ease;
+}
+
+.menu a:hover,
+.menu a.activo {
   color: #ffffff;
+}
+
+.menu a:hover::after,
+.menu a.activo::after {
+  transform: scaleX(1); /* ...y se despliega hacia los dos lados. */
 }
 
 /* El botón de la cabecera es algo más pequeño que los de la portada. */
@@ -402,7 +585,7 @@ main > #portada {
   position: relative; /* Referencia para las capas ::before y ::after. */
   isolation: isolate; /* Las capas con z-index negativo no salen de la sección. */
   overflow: hidden;
-  padding-top: 96px;
+  padding-top: calc(96px + var(--altura-cabecera)); /* La cabecera va encima. */
   padding-bottom: 112px;
   color: #ffffff;
   background-color: var(--color-obsidiana);
@@ -497,21 +680,6 @@ main > #portada::after {
   margin: 0 6px 12px;
 }
 
-/* Captura del calendario de ejemplo, presentada como una tarjeta que
-   flota sobre la portada con un brillo azul alrededor. */
-.portada-maqueta {
-  width: 100%;
-  max-width: 1000px;
-  height: auto; /* Respeta la proporción de los atributos width y height. */
-  margin: 56px auto 0;
-  display: block;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  box-shadow:
-    0 30px 80px -20px rgba(0, 0, 0, 0.6),
-    0 0 60px -10px var(--color-brillo);
-}
-
 /* ==================================================
    5. EL PROBLEMA Y CÓMO FUNCIONA
    ================================================== */
@@ -601,6 +769,7 @@ main > #portada::after {
 /* Hueco de la foto. Mientras no llega, muestra las iniciales. */
 .persona-foto {
   width: 100%;
+  height: auto; /* Sin esto, el atributo height="800" del <img> manda. */
   aspect-ratio: 4 / 5;
   display: grid;
   place-items: center;
@@ -709,9 +878,8 @@ main > #portada::after {
   background-color: var(--color-fondo-azul);
 }
 
-/* Título y fuente ocupan toda la fila. */
-.cifras-titulo,
-.cifras-fuente {
+/* El título ocupa toda la fila. */
+.cifras-titulo {
   grid-column: 1 / -1;
   margin: 0;
 }
@@ -762,13 +930,96 @@ main > #portada::after {
   letter-spacing: 0.06em;
 }
 
-.cifras-fuente {
-  color: var(--color-texto-secundario);
-  font-size: 0.78rem;
+/* La cifra mundial va sola en su fila, centrada y con el mismo ancho
+   que las de arriba (media fila menos medio hueco). */
+.cifra--destacada {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - 10px);
+  border-color: rgba(21, 93, 252, 0.35);
+  box-shadow: 0 10px 30px -18px var(--color-brillo);
 }
 
-.cifras-fuente a {
+/* Fuentes como tarjetas enlazables en lugar de texto subrayado:
+   etiqueta «FUENTE», nombre del informe y flecha de enlace externo. */
+.fuentes {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+}
+
+/* Estilo de las cajas de idioma de chiissuu.com: borde fino con
+   degradado metálico (aquí en azul) y dos esquinas cortadas en diagonal.
+   Así se distinguen de las tarjetas de cifras, que son redondeadas.
+   El borde es el propio fondo del enlace; ::before pinta el interior
+   blanco 1px más adentro, con el mismo recorte. */
+.fuentes a {
+  --corte: 12px; /* Tamaño de las esquinas cortadas. */
+  position: relative;
+  isolation: isolate; /* El ::before con z-index -1 queda dentro del enlace. */
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-texto);
+  background: linear-gradient(135deg, #8fb4ff 8%, var(--color-primario) 30%,
+    #5b8dff 48%, #8fb4ff 72%, var(--color-primario));
+  clip-path: polygon(0 0, calc(100% - var(--corte)) 0, 100% var(--corte),
+    100% 100%, var(--corte) 100%, 0 calc(100% - var(--corte)));
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: filter 150ms ease;
+}
+
+.fuentes a::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: linear-gradient(135deg, var(--color-fondo), var(--color-primario-suave));
+  /* Mismo recorte; la diagonal interior se acorta para que el borde
+     tenga el mismo grosor en las esquinas cortadas. */
+  clip-path: polygon(0 0, calc(100% - var(--corte) + 0.6px) 0, 100% calc(var(--corte) - 0.6px),
+    100% 100%, calc(var(--corte) - 0.6px) 100%, 0 calc(100% - var(--corte) + 0.6px));
+}
+
+/* Flecha ↗ al final, que se desplaza al pasar el ratón. */
+.fuentes a::after {
+  content: "↗";
+  margin-left: auto;
   color: var(--color-primario);
+  font-weight: 700;
+  transition: transform 150ms ease;
+}
+
+/* Al pasar el ratón, el borde brilla. box-shadow no sirve porque
+   clip-path lo recortaría; drop-shadow se aplica después del recorte. */
+.fuentes li {
+  transition: filter 150ms ease;
+}
+
+.fuentes li:hover {
+  filter: drop-shadow(0 0 6px rgba(21, 93, 252, 0.45));
+}
+
+.fuentes a:hover::after {
+  transform: translate(2px, -2px);
+}
+
+.fuente-etiqueta {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--color-primario);
+  background-color: var(--color-primario-suave);
+  font-family: var(--fuente-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /* En la sección azul, la franja va en blanco para distinguirse. */
@@ -906,14 +1157,9 @@ main > #portada::after {
 }
 
 #para-quien article p {
-  margin: 8px 0 16px;
+  margin: 8px 0 0;
   color: var(--color-texto-secundario);
   font-size: 0.875rem;
-}
-
-#para-quien small {
-  color: var(--color-texto-secundario);
-  font-size: 0.7rem;
 }
 
 /* ==================================================
@@ -1439,22 +1685,63 @@ main > #portada::after {
    11. EQUIPO
    ================================================== */
 
+/* La sección tiene dos partes: la foto de grupo con el título encima
+   (el equipo como grupo) y, debajo, las tarjetas con cada rol. */
 #equipo {
   text-align: center;
 }
 
-#equipo h2 {
-  margin: 0 auto; /* Centra el título aunque tenga ancho máximo. */
+/* La etiqueta va al principio de la sección y alineada a la izquierda,
+   igual que en el resto de secciones, aunque el contenido esté centrado. */
+#equipo > .etiqueta {
+  display: flex;
+  margin-right: auto;
 }
 
-/* Foto de grupo: solo la imagen hija directa de la sección, para no
-   afectar a las fotos de las tarjetas. */
-#equipo > img {
+/* --- Parte 1: foto panorámica --- */
+
+/* Marco de la foto: recorte panorámico con esquinas redondeadas. */
+.equipo-portada {
+  position: relative; /* Referencia para el texto que va encima. */
+  margin: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: 0 30px 60px -30px rgba(21, 29, 45, 0.45);
+  text-align: left;
+}
+
+/* object-fit recorta la foto sin deformarla; la posición vertical deja
+   las caras en el centro y la pantalla con el logo detrás. */
+.equipo-portada img {
   width: 100%;
-  max-width: 760px;
-  margin: 40px auto 0;
+  height: auto;
+  aspect-ratio: 16 / 7;
   display: block;
-  border-radius: 12px;
+  object-fit: cover;
+  object-position: center 78%;
+}
+
+/* Franja inferior: degradado de transparente a obsidiana para que el
+   texto blanco se lea sobre la foto. */
+.equipo-portada-texto {
+  position: absolute;
+  inset: auto 0 0; /* Pegado abajo, de lado a lado. */
+  padding: 80px 36px 28px;
+  background: linear-gradient(transparent, rgba(3, 5, 12, 0.88));
+}
+
+.equipo-portada-texto h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+
+/* --- Parte 2: quién hace BookU --- */
+
+.equipo-subtitulo {
+  margin: 56px 0 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
 }
 
 /* Cada lista es una fila de tarjetas centrada. Con Flexbox una fila
@@ -1630,10 +1917,9 @@ main > #portada::after {
   isolation: isolate;
   overflow: hidden;
   padding: 28px var(--margen-lateral);
-  display: grid;
-  grid-template-columns: auto 1fr; /* Logo a la izquierda y textos a la derecha. */
+  display: flex; /* Logo y texto juntos; «Volver arriba» al otro extremo. */
   align-items: center;
-  column-gap: 24px;
+  gap: 24px;
   border-top: 1px solid var(--color-marino-borde);
   color: var(--color-texto-claro);
   background-color: var(--color-obsidiana);
@@ -1644,7 +1930,7 @@ main > #portada::after {
   font-size: 0.75rem;
 }
 
-/* Al ser absoluto, no ocupa ninguna celda de la rejilla del pie. */
+/* Al ser absoluto, no ocupa sitio entre los elementos del pie. */
 .pie-pagina::before {
   content: "";
   position: absolute;
@@ -1655,17 +1941,67 @@ main > #portada::after {
   opacity: 0.3;
 }
 
-.pie-pagina .logo {
-  grid-row: span 2; /* El logo ocupa la altura de los dos párrafos. */
-}
-
 .pie-pagina .logo img {
   height: 40px;
 }
 
+/* El texto va pegado al logo, separado por una línea vertical fina:
+   logo y texto se leen como una sola firma. En Space Mono, como las
+   etiquetas de sección. */
 .pie-pagina p {
   margin: 0;
-  text-align: right;
+  padding-left: 24px;
+  border-left: 1px solid var(--color-marino-borde);
+  color: #ffffff;
+  font-family: var(--fuente-mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+/* Enlace al principio de la página, empujado al extremo derecho. */
+/* Botón en píldora, como el resto de botones de la web: borde azul
+   claro, texto blanco y la flecha dentro de un círculo azul. Al pasar el
+   ratón se rellena de azul y la flecha sube. */
+.volver-arriba {
+  margin-left: auto;
+  padding: 6px 6px 6px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(0, 166, 244, 0.45);
+  border-radius: 999px;
+  color: #ffffff;
+  background-color: rgba(21, 93, 252, 0.12);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 200ms ease;
+}
+
+.volver-arriba::after {
+  content: "↑";
+  width: 30px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background-color: var(--color-primario);
+  font-size: 1rem;
+  transition: transform 200ms ease;
+}
+
+.volver-arriba:hover {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario);
+  box-shadow: 0 8px 24px -8px var(--color-brillo);
+}
+
+.volver-arriba:hover::after {
+  background-color: var(--color-primario-hover);
+}
+
+.volver-arriba:hover::after {
+  transform: translateY(-3px);
 }
 
 /* ==================================================
@@ -1705,9 +2041,21 @@ main > #portada::after {
    15. PANTALLAS MEDIANAS
    ================================================== */
 
-@media (max-width: 960px) {
-  /* Sin JavaScript para un menú desplegable, el menú se oculta y queda
-     el botón de la cabecera como acceso principal. */
+/* Con 8 enlaces, en pantallas medianas el menú se compacta un poco. */
+@media (max-width: 1200px) {
+  .menu ul {
+    gap: 18px;
+  }
+
+  .menu a {
+    font-size: 0.85rem;
+  }
+}
+
+/* Por debajo de 1024px los 8 enlaces ya no caben: el menú se oculta y
+   queda el botón de la cabecera como acceso principal (no hay menú
+   desplegable). */
+@media (max-width: 1024px) {
   .menu {
     display: none;
   }
@@ -1716,7 +2064,9 @@ main > #portada::after {
   .cabecera .boton {
     margin-left: auto;
   }
+}
 
+@media (max-width: 960px) {
   .reserva-panel {
     grid-template-columns: 1fr;
   }
@@ -1755,6 +2105,16 @@ main > #portada::after {
     grid-template-columns: 1fr;
   }
 
+  /* En una sola columna, la cifra mundial ocupa todo el ancho. */
+  .cifra--destacada {
+    width: 100%;
+  }
+
+  /* El nombre del informe pasa debajo de la etiqueta «FUENTE». */
+  .fuentes a {
+    flex-wrap: wrap;
+  }
+
   /* El recorrido pasa a ser vertical: la línea baja por la izquierda. */
   #como-funciona > ol::before {
     top: 6px;
@@ -1780,7 +2140,7 @@ main > #portada::after {
   }
 
   main > #portada {
-    padding-top: 64px;
+    padding-top: calc(64px + var(--altura-cabecera));
     padding-bottom: 72px;
   }
 
@@ -1828,6 +2188,25 @@ main > #portada::after {
     width: 100%;
   }
 
+  /* En móvil la foto de grupo es menos panorámica para que se vean
+     bien las caras, y la franja de texto ocupa menos. */
+  .equipo-portada img {
+    aspect-ratio: 4 / 3;
+    object-position: center 70%;
+  }
+
+  /* En pantallas pequeñas el texto taparía las caras: pasa debajo de
+     la foto, sobre una franja de obsidiana. */
+  .equipo-portada-texto {
+    position: static;
+    padding: 16px 18px 18px;
+    background: var(--color-obsidiana);
+  }
+
+  .equipo-subtitulo {
+    margin-top: 40px;
+  }
+
   /* Dos tarjetas del equipo por fila: la mitad menos la mitad del hueco. */
   .miembro {
     flex-basis: calc(50% - 8px);
@@ -1838,15 +2217,11 @@ main > #portada::after {
     align-items: flex-start;
   }
 
+  /* En móvil el pie se apila y se centra. */
   .pie-pagina {
-    grid-template-columns: 1fr;
-    row-gap: 8px;
+    flex-direction: column;
+    gap: 12px;
     text-align: center;
-  }
-
-  .pie-pagina .logo {
-    grid-row: auto;
-    justify-self: center; /* Centra el logo en su celda. */
   }
 
   /* En móvil el logo de la cabecera es algo más pequeño. */
@@ -1854,8 +2229,15 @@ main > #portada::after {
     height: 28px;
   }
 
+  /* Apilado, la línea vertical ya no tiene sentido. */
   .pie-pagina p {
-    text-align: center;
+    padding-left: 0;
+    border-left: 0;
+    font-size: 0.85rem;
+  }
+
+  .volver-arriba {
+    margin-left: 0;
   }
 }
 
