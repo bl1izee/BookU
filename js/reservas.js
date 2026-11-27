@@ -365,7 +365,7 @@ function pintarFranjas() {
             const dueño = dueñoDeFranja(estado.fecha, recurso.id, hora);
             texto = `Ocupada por ${escapar(dueño)}`;
         } else if (tipo === "pasada") {
-            texto = "Ya pasó";
+            texto = "Finalizado";
         } else {
             texto = "Libre";
         }
